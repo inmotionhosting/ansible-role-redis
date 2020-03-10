@@ -1,0 +1,27 @@
+---
+- name: (Debian 9) Add backports repo for Redis 5
+  when:
+    - ansible_distribution == 'Debian'
+    - ansible_distribution_major_version == '9'
+  apt_repository:
+    repo: 'deb http://ftp.debian.org/debian stretch-backports main'
+    state: present
+    filename: 'stretch-backports'
+
+- name: (Debian 9) Install Redis from backports
+  when:
+    - ansible_distribution == 'Debian'
+    - ansible_distribution_major_version == '9'
+  package:
+    name: "{{ redis_packages }}"
+    default_release: stretch-backports
+    state: present
+  register: redis_installed
+
+- name: (Ubuntu) Update APT cache
+  when: ansible_distribution == 'Ubuntu'
+  package:
+    force_apt_get: true
+    update_cache: true
+    cache_valid_time: 3600
+    state: present

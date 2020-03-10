@@ -1,0 +1,52 @@
+---
+# tasks file for inmotion.redis
+
+- name: (Redis) Include os_family vars
+  vars:
+    target: '{{ ansible_os_family }}'
+    targets:
+      - Debian
+  when: target in targets
+  include_vars: '{{ target }}.yml'
+
+- name: (Redis) Include os_family tasks
+  vars:
+    target: '{{ ansible_os_family }}'
+    targets:
+      - Debian
+      - RedHat
+  when: target in targets
+  include: '{{ target }}.yml'
+
+- name: (Redis) Install Redis if not yet performed
+  when: not redis_installed.changed
+  package:
+    name: "{{ redis_packages }}"
+    state: present
+
+- name: (Redis) Get Redis version
+  register: redis_installed_version
+  shell: |
+    set -o pipefail
+    redis-server --version | awk '{print $3}' | sed 's/v=//'
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: (Redis) Set Redis version as fact
+  set_fact:
+    redis_version: '{{ redis_installed_version.stdout_lines[0] }}'
+
+- name: (Redis) Configure Redis
+  template:
+    src: redis.conf.j2
+    dest: '{{ redis_conf }}'
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: (Redis) Enable and start redis service
+  service:
+    name: '{{ redis_daemon }}'
+    state: started
+    enabled: true
