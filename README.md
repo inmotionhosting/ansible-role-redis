@@ -1,4 +1,4 @@
-Role Name
+inmotion.redis
 =========
 
 Modular Ansible Role for deploying and configuring Redis
