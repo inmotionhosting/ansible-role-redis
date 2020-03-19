@@ -5,7 +5,7 @@ services:
 
 env:
   global:
-    - ROLE_NAME="inmotion.redis"
+    - ROLE_NAME="inmotionhosting.redis"
   matrix:
     - MOLECULE_DISTRO="centos-7"
     - MOLECULE_DISTRO="centos-8"
