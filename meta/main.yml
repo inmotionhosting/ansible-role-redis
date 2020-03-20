@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: redis
   author: inmotionhosting
-  description: Install and configure Redis
+  description: Modular Ansible Role for deploying and configuring Redis
   company: InMotion Hosting
   license: GPLv3
   min_ansible_version: 2.8
