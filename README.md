@@ -3,7 +3,7 @@ inmotionhosting.redis
 
 Modular Ansible Role for deploying and configuring Redis
 
-[![Build Status](https://travis-ci.org/inmotionhosting/redis.png?branch=master)](https://travis-ci.org/inmotionhosting/redis)
+[![Build Status](https://travis-ci.org/inmotionhosting/ansible-role-redis.png?branch=master)](https://travis-ci.org/inmotionhosting/ansible-role-redis)
 
 Requirements
 ------------

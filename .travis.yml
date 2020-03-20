@@ -5,7 +5,7 @@ services:
 
 env:
   global:
-    - ROLE_NAME="inmotionhosting.redis"
+    - ROLE_NAME="redis"
   matrix:
     - MOLECULE_DISTRO="centos-7"
     - MOLECULE_DISTRO="centos-8"
@@ -20,9 +20,12 @@ addons:
       - python3-pip
 
 install:
-  - pip install ansible docker molecule[docker] testinfra
-  - ansible --version
-  - molecule --version
+  - pip install ansible ansible-lint docker molecule[docker] testinfra yamllint
+
+before_script:
+  - cd ../
+  - mv ansible-role-$ROLE_NAME inmotionhosting.$ROLE_NAME
+  - cd inmotionhosting.$ROLE_NAME
 
 script:
   - molecule test

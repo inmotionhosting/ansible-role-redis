@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: redis
   author: inmotionhosting
   description: Install and configure Redis
   company: InMotion Hosting
