@@ -9,7 +9,7 @@ Requirements
 ------------
 
 * CentOS 7.x or later
-* Debian 9 or later
+* Debian 8 or later
 * Ubuntu 16.04 LTS or later
 
 Role Variables
@@ -53,4 +53,4 @@ GPLv3
 Author Information
 ------------------
 
-InMotion Hosting
+[InMotion Hosting](https://inmotionhosting.com)

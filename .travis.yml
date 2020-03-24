@@ -1,31 +1,24 @@
 ---
 language: python
-services:
-  - docker
-
-env:
-  global:
-    - ROLE_NAME="redis"
-  matrix:
-    - MOLECULE_DISTRO="centos-7"
-    - MOLECULE_DISTRO="centos-8"
-    - MOLECULE_DISTRO="debian-9"
-    - MOLECULE_DISTRO="debian-10"
-    - MOLECULE_DISTRO="ubuntu-16.04"
-    - MOLECULE_DISTRO="ubuntu-18.04"
+services: docker
 
 addons:
   apt:
     packages:
       - python3-pip
 
-install:
-  - pip install ansible ansible-lint docker molecule[docker] testinfra yamllint
+env:
+  matrix:
+    - MOLECULE_DISTRO="centos-7"
+    - MOLECULE_DISTRO="centos-8"
+    - MOLECULE_DISTRO="debian-8"
+    - MOLECULE_DISTRO="debian-9"
+    - MOLECULE_DISTRO="debian-10"
+    - MOLECULE_DISTRO="ubuntu-16.04"
+    - MOLECULE_DISTRO="ubuntu-18.04"
 
-before_script:
-  - cd ../
-  - mv ansible-role-$ROLE_NAME inmotionhosting.$ROLE_NAME
-  - cd inmotionhosting.$ROLE_NAME
+install:
+  - pip install -r requirements.txt
 
 script:
   - molecule test
