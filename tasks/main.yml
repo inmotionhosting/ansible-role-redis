@@ -2,27 +2,25 @@
 # tasks file for inmotion.redis
 
 - name: (Redis) Include os_family vars
+  include_vars: "{{ ansible_os_family }}.yml"
   vars:
-    target: '{{ ansible_os_family }}'
     targets:
       - Debian
-  when: target in targets
-  include_vars: '{{ target }}.yml'
+  when: ansible_os_family in targets
 
 - name: (Redis) Include os_family tasks
+  include: '{{ target }}.yml'
   vars:
-    target: '{{ ansible_os_family }}'
     targets:
       - Debian
       - RedHat
-  when: target in targets
-  include: '{{ target }}.yml'
+  when: ansible_os_family in targets
 
 - name: (Redis) Install Redis if not yet performed
-  when: not redis_installed.changed
   package:
     name: "{{ redis_packages }}"
     state: present
+  when: not redis_installed.changed
 
 - name: (Redis) Get Redis version
   register: redis_installed_version

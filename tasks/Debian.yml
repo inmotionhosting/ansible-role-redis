@@ -18,7 +18,7 @@
     - ansible_distribution == 'Debian'
     - ansible_distribution_major_version == '9'
 
-- name: (Debian 8) Install Redis from backports
+- name: (Debian 8) Set name of Redis daemon
   set_fact:
     redis_daemon: redis-server
   when:
