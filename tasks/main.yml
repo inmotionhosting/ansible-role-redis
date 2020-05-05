@@ -9,7 +9,7 @@
   when: ansible_os_family in targets
 
 - name: (Redis) Include os_family tasks
-  include: '{{ target }}.yml'
+  include: '{{ ansible_os_family }}.yml'
   vars:
     targets:
       - Debian
