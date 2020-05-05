@@ -18,13 +18,6 @@
     - ansible_distribution == 'Debian'
     - ansible_distribution_major_version == '9'
 
-- name: (Debian 8) Set name of Redis daemon
-  set_fact:
-    redis_daemon: redis-server
-  when:
-    - ansible_distribution == 'Debian'
-    - ansible_distribution_major_version == '8'
-
 - name: (Ubuntu) Update APT cache
   apt:
     force_apt_get: true
