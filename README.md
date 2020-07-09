@@ -1,19 +1,22 @@
-inmotionhosting.redis
-=========
+[![Build Status](https://travis-ci.org/inmotionhosting/ansible-role-redis.png?branch=master)](https://travis-ci.org/inmotionhosting/ansible-role-redis) [![GPL-3.0 License](https://img.shields.io/github/license/inmotionhosting/ansible-role-redis.svg?color=blue)](https://github.com/inmotionhosting/ansible-role-redis/blob/master/LICENSE) [![GitHub stars](https://img.shields.io/github/stars/inmotionhosting/ansible-role-redis.svg)](https://github.com/inmotionhosting/ansible-role-redis/stargazers)
+
+# Ansible Role: Redis
 
 Modular Ansible Role for deploying and configuring Redis
 
-[![Build Status](https://travis-ci.org/inmotionhosting/ansible-role-redis.png?branch=master)](https://travis-ci.org/inmotionhosting/ansible-role-redis)
-
-Requirements
-------------
+## Requirements
 
 * CentOS 7.x or later
 * Debian 9 or later
 * Ubuntu 16.04 LTS or later
 
-Role Variables
---------------
+## Dependencies
+
+None.
+
+## Role Variables
+
+Available variables are listed below with their default values (you can also see `defaults/main.yml`)
 
 | Variable | Definition |
 | -------- | ---------- |
@@ -33,24 +36,18 @@ Role Variables
 | redis_daemon | The name of the Redis daemon.
 | redis_packages | The packages needed by this role.
 
-Dependencies
-------------
+## Example Playbook
 
-None.
+```yaml
+- hosts: www
+  roles:
+    - role: inmotionhosting.redis
+```
 
-Example Playbook
-----------------
-
-    - hosts: servers
-      roles:
-         - role: inmotionhosting.redis
-
-License
--------
+## License
 
 GPLv3
 
-Author Information
-------------------
+## Author Information
 
 [InMotion Hosting](https://inmotionhosting.com)
