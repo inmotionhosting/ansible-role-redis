@@ -17,3 +17,5 @@ redis_conf_unixsocket_permissions: 700
 redis_daemon: redis
 redis_packages:
   - redis
+redis_systemd_restart: false
+systemd_restart_setting: on-failure
