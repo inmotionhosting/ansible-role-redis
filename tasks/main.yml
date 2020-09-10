@@ -43,6 +43,13 @@
     group: root
     mode: '0644'
 
+- name: Include systemd restart configuation
+  include: systemd.yml
+  when:  >-
+    ( redis_systemd_restart|default(False)
+    or systemd_restart|default(False) )
+    and systemd_restart_setting is defined
+
 - name: (Redis) Enable and start redis service
   service:
     name: '{{ redis_daemon }}'

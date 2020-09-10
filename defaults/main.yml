@@ -7,7 +7,7 @@ redis_conf_daemonize: "yes"
 redis_conf_logfile: /var/log/redis/redis.log
 redis_conf_maxmemory: 1G
 redis_conf_maxmemory_policy: allkeys-lru
-redis_conf_pidfile: /var/run/redis.pid
+redis_conf_pidfile: /var/run/redis/redis.pid
 redis_conf_requirepass: false
 redis_conf_supervised: systemd
 redis_conf_timeout: 60
@@ -17,3 +17,5 @@ redis_conf_unixsocket_permissions: 700
 redis_daemon: redis
 redis_packages:
   - redis
+redis_systemd_restart: false
+systemd_restart_setting: on-failure
