@@ -9,13 +9,13 @@ bind {{ redis_conf_bind }}
 protected-mode yes
 {% endif %}
 
-{% if redis_conf_unixsocket == true %}
+{% if redis_conf_unixsocket %}
 port 0
 {% else %}
 port 6379
 {% endif %}
 
-{% if redis_conf_unixsocket == true %}
+{% if redis_conf_unixsocket %}
 unixsocket {{ redis_conf_unixsocket_location }}
 unixsocketperm {{ redis_conf_unixsocket_permissions }}
 {% endif -%}
@@ -75,7 +75,7 @@ repl-diskless-sync-delay 5
 repl-disable-tcp-nodelay no
 {% endif -%}
 
-{% if redis_conf_requirepass != false %}
+{% if redis_conf_requirepass %}
 #
 # SECURITY
 #
