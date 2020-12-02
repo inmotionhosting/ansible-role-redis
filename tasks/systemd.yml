@@ -1,6 +1,6 @@
 # tasks/facts.yml
 
-- name: (Debian) Install python-apt package
+- name: (Debian/Python 3) Install python-apt package
   package:
     name: python3-apt
     state: present
@@ -8,7 +8,7 @@
     - ansible_python_version is version('3.0', '>=')
     - ansible_os_family == "Debian"
 
-- name: (Debian) Install python-apt package
+- name: (Debian/Python 2) Install python-apt package
   package:
     name: python-apt
     state: present

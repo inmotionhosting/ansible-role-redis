@@ -5,8 +5,8 @@
     state: present
     filename: "stretch-backports"
   when:
-    - ansible_distribution == 'Debian'
-    - ansible_distribution_major_version == '9'
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version == "9"
 
 - name: (Debian 9) Install Redis from backports
   package:
@@ -15,8 +15,8 @@
     state: present
   register: redis_installed
   when:
-    - ansible_distribution == 'Debian'
-    - ansible_distribution_major_version == '9'
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version == "9"
 
 - name: (Ubuntu) Update APT cache
   apt:
@@ -24,4 +24,4 @@
     update_cache: true
     cache_valid_time: "3600"
     state: present
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_distribution == "Ubuntu"

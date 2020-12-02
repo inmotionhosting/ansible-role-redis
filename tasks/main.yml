@@ -1,28 +1,19 @@
 ---
 # tasks file for inmotion.redis
 
-- name: (Redis) Include os_family vars
-  include_vars: "{{ ansible_os_family }}.yml"
-  vars:
-    targets:
-      - Debian
-  when: ansible_os_family in targets
+- name: Include variables and set facts
+  include: facts.yml
 
-- name: (Redis) Include os_family tasks
-  include: '{{ ansible_os_family }}.yml'
-  vars:
-    targets:
-      - Debian
-      - RedHat
-  when: ansible_os_family in targets
+- name: Handle os_family errata
+  include: "{{ ansible_os_family }}.yml"
 
-- name: (Redis) Install Redis if not yet performed
+- name: Install Redis if not yet performed
   package:
     name: "{{ redis_packages }}"
     state: present
   when: not redis_installed.changed
 
-- name: (Redis) Get Redis version
+- name: Get Redis version
   register: redis_installed_version
   shell: |
     set -o pipefail
@@ -31,27 +22,27 @@
     executable: /bin/bash
   changed_when: false
 
-- name: (Redis) Set Redis version as fact
+- name: Set Redis version as fact
   set_fact:
-    redis_version: '{{ redis_installed_version.stdout_lines[0] }}'
+    redis_version: "{{ redis_installed_version.stdout_lines[0] }}"
 
-- name: (Redis) Configure Redis
+- name: Configure Redis
   template:
     src: redis.conf.j2
-    dest: '{{ redis_conf }}'
+    dest: "{{ redis_conf }}"
     owner: root
     group: root
-    mode: '0644'
+    mode: 0644
 
 - name: Include systemd restart configuation
   include: systemd.yml
-  when:  >-
+  when: >-
     ( redis_systemd_restart|default(False)
     or systemd_restart|default(False) )
     and systemd_restart_setting is defined
 
-- name: (Redis) Enable and start redis service
+- name: Enable and start redis service
   service:
-    name: '{{ redis_daemon }}'
+    name: "{{ redis_daemon }}"
     state: started
     enabled: true
