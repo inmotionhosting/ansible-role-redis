@@ -1,14 +1,30 @@
 ---
-- name: (RedHat 7) Install Remi repo
-  package:
-    name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+- name: (RedHat) Add Remi repository GPG key
+  ansible.builtin.rpm_key:
     state: present
-  when: ansible_distribution_major_version == "7"
+    key: "https://rpms.remirepo.net/RPM-GPG-KEY-{{ target }}"
+  vars:
+    target: >-
+      {{ "remi2021" if version | int == 9
+      else ("remi2018" if version | int == 8
+      else ("remi" if version | int == 7
+      else "remi2023")) }}
+    version: "{{ ansible_distribution_major_version }}"
 
-- name: (RedHat 7) Install Redis
-  package:
-    name: "{{ redis_packages }}"
+- name: (RedHat) Install Remi repo
+  ansible.builtin.package:
+    name: "https://rpms.remirepo.net/enterprise/remi-release-{{ ansible_distribution_major_version }}.rpm"
+    state: present
+
+- name: (RedHat) Install Redis
+  ansible.builtin.package:
+    name: "{{ package }}"
     enablerepo: "remi"
     state: present
   register: redis_installed
-  when: ansible_distribution_major_version == "7"
+  vars:
+    package: >-
+      {{ "@redis:remi-7.0" if version > "7"
+      else ("redis" if version == "7"
+      else "redis") }}
+    version: "{{ ansible_distribution_major_version }}"  

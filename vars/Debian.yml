@@ -1,4 +1,3 @@
 ---
 redis_conf_pidfile: /var/run/redis/redis-server.pid
-redis_packages:
-  - redis-server
+redis_package: redis-server

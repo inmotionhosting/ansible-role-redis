@@ -1,27 +1,71 @@
-name: Ansible-Role-Redis CI Testing
+name: Ansible Molecule Pipeline
 
-on: 
+on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
+  workflow_dispatch:
+    branches: [master]
 
-jobs: 
-  test:
-    runs-on: self-hosted
+env:
+  PY_COLORS: '1'
+  ANSIBLE_FORCE_COLOR: '1'
+
+jobs:
+  molecule:
+    name: Molecule Test
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        molecule_distro: [ centos-7, centos-8, debian-9, debian-10, ubuntu-18.04, ubuntu-20.04 ]
+        include:
+          - image: geerlingguy/docker-debian10-ansible:latest
+            command: /lib/systemd/systemd
+          - image: geerlingguy/docker-debian11-ansible:latest
+            command: /lib/systemd/systemd
+          - image: geerlingguy/docker-ubuntu1804-ansible:latest
+            command: /lib/systemd/systemd
+          - image: geerlingguy/docker-ubuntu2004-ansible:latest
+          - image: geerlingguy/docker-ubuntu2204-ansible:latest
+          - image: ghcr.io/artis3n/docker-almalinux8-ansible:latest
+          - image: geerlingguy/docker-rockylinux8-ansible:latest
+          - image: geerlingguy/docker-rockylinux9-ansible:latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Python3
-        uses: actions/setup-python@v2
+      - uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
-      - name: Pip install Repo Requirements
-        run: pip install -r requirements.txt
-      - name: Molecule Test
+          python-version: "3.x"
+
+      - name: Install test dependencies
+        run: pip3 install ansible molecule molecule-docker
+
+      - name: Run Molecule Test
         run: molecule test
         env:
-          MOLECULE_DISTRO: ${{ matrix.molecule_distro }}
+          MOLECULE_IMAGE: ${{ matrix.image }}
+          MOLECULE_COMMAND: ${{ matrix.command }}
+
+  molecule-legacy:
+    name: Molecule Test Legacy OS
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: geerlingguy/docker-centos7-ansible:latest
+            command: /usr/lib/systemd/systemd
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install test dependencies
+        run: pip3 install ansible molecule molecule-docker
+
+      - name: Run Molecule Test
+        run: molecule test
+        env:
+          MOLECULE_IMAGE: ${{ matrix.image }}
+          MOLECULE_COMMAND: ${{ matrix.command }}
