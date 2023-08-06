@@ -36,7 +36,6 @@ Available variables are listed below with their default values (you can also see
 | redis_conf_unixsocket_location | The location of the Redis unix socket file.
 | redis_conf_unixsocket_permissions | The unix permissions to set on the unix socket file.
 | redis_daemon | The name of the Redis daemon.
-| redis_packages | The packages needed by this role.
 
 ## Example Playbook
 

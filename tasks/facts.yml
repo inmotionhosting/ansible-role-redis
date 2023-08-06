@@ -18,8 +18,6 @@
       - redis_conf_maxmemory_policy
     redis_required_ints:
       - redis_conf_timeout
-    required_lists:
-      - redis_packages
 
 - name: Check required Redis variables (strings)
   ansible.builtin.fail:
@@ -44,18 +42,6 @@
     lookup('vars', item)|int < 0
     or lookup('vars', item)|int > 65535
   with_items: "{{ redis_required_ints }}"
-
-- name: Check required Redis variables (lists)
-  ansible.builtin.fail:
-    msg: |
-      Invalid value for variable for '{{ item }}': {{ lookup('vars', item) }}
-
-      Supported types  : List, string
-      Supported values : Any non-null list or string
-  when: >-
-    lookup('vars', item) is not iterable
-    or lookup('vars', item) == 0
-  with_items: "{{ required_lists }}"
 
 - name: Check variable 'systemd_restart_setting'
   ansible.builtin.fail:
