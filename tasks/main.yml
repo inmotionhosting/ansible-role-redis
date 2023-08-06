@@ -9,7 +9,7 @@
 
 - name: Install Redis if not yet performed
   ansible.builtin.package:
-    name: "{{ redis_packages }}"
+    name: "{{ redis_package }}"
     state: present
   when: not redis_installed.changed
 
