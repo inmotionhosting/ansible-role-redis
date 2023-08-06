@@ -1,11 +1,11 @@
 ---
 
 - name: (Debian) Include os_family vars
-  include_vars: Debian.yml
+  ansible.builtin.include_vars: Debian.yml
   when: ansible_os_family == "Debian"
 
 - name: Set lists of required variables
-  set_fact:
+  ansible.builtin.set_fact:
     redis_required_strings:
       - redis_conf
       - redis_daemon
@@ -22,7 +22,7 @@
       - redis_packages
 
 - name: Check required Redis variables (strings)
-  fail:
+  ansible.builtin.fail:
     msg: |
       Invalid value for variable for '{{ item }}': {{ lookup('vars', item) }}
 
@@ -34,7 +34,7 @@
   with_items: "{{ redis_required_strings }}"
 
 - name: Check required Redis variables (integers)
-  fail:
+  ansible.builtin.fail:
     msg: |
       Invalid value for variable for '{{ item }}': {{ lookup('vars', item) }}
 
@@ -46,7 +46,7 @@
   with_items: "{{ redis_required_ints }}"
 
 - name: Check required Redis variables (lists)
-  fail:
+  ansible.builtin.fail:
     msg: |
       Invalid value for variable for '{{ item }}': {{ lookup('vars', item) }}
 
@@ -58,7 +58,7 @@
   with_items: "{{ required_lists }}"
 
 - name: Check variable 'systemd_restart_setting'
-  fail:
+  ansible.builtin.fail:
     msg: |
       Invalid value for variable 'systemd_restart_setting': '{{ systemd_restart_setting }}'
 

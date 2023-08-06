@@ -1,14 +1,12 @@
 ---
-- name: (RedHat 7) Install Remi repo
-  package:
-    name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+- name: (RedHat) Install Remi repo
+  ansible.builtin.package:
+    name: "https://rpms.remirepo.net/enterprise/remi-release-{{ ansible_distribution_major_version }}.rpm"
     state: present
-  when: ansible_distribution_major_version == "7"
 
-- name: (RedHat 7) Install Redis
-  package:
+- name: (RedHat) Install Redis
+  ansible.builtin.package:
     name: "{{ redis_packages }}"
     enablerepo: "remi"
     state: present
   register: redis_installed
-  when: ansible_distribution_major_version == "7"

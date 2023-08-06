@@ -1,6 +1,6 @@
 ---
 - name: (Debian 9) Add backports repo for Redis 5
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb http://ftp.debian.org/debian stretch-backports main"
     state: present
     filename: "stretch-backports"
@@ -9,7 +9,7 @@
     - ansible_distribution_major_version == "9"
 
 - name: (Debian 9) Install Redis from backports
-  package:
+  ansible.builtin.package:
     name: "{{ redis_packages }}"
     default_release: stretch-backports
     state: present
@@ -18,8 +18,46 @@
     - ansible_distribution == "Debian"
     - ansible_distribution_major_version == "9"
 
+- name: (Debian 10) Add backports repo for Redis
+  ansible.builtin.apt_repository:
+    repo: "deb http://ftp.debian.org/debian buster-backports main"
+    state: present
+    filename: "buster-backports"
+  when:
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version == "10"
+
+- name: (Debian 10) Install Redis from backports
+  ansible.builtin.package:
+    name: "{{ redis_packages }}"
+    default_release: buster-backports
+    state: present
+  register: redis_installed
+  when:
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version == "10"
+
+- name: (Debian 11) Add backports repo for Redis
+  ansible.builtin.apt_repository:
+    repo: "deb http://ftp.debian.org/debian bullseye-backports main"
+    state: present
+    filename: "bullseye-backports"
+  when:
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version == "11"
+
+- name: (Debian 11) Install Redis from backports
+  ansible.builtin.package:
+    name: "{{ redis_packages }}"
+    default_release: bullseye-backports
+    state: present
+  register: redis_installed
+  when:
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version == "11"
+
 - name: (Ubuntu) Update APT cache
-  apt:
+  ansible.builtin.apt:
     force_apt_get: true
     update_cache: true
     cache_valid_time: "3600"
