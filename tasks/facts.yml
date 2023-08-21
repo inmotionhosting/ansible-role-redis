@@ -16,6 +16,7 @@
       - redis_conf_logfile
       - redis_conf_maxmemory
       - redis_conf_maxmemory_policy
+      - redis_package
     redis_required_ints:
       - redis_conf_timeout
 
