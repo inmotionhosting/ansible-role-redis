@@ -32,7 +32,7 @@
     dest: "{{ redis_conf }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: Include systemd restart configuation
   ansible.builtin.include_tasks: systemd.yml
