@@ -11,9 +11,9 @@ redis_conf_pidfile: /var/run/redis/redis.pid
 redis_conf_requirepass: false
 redis_conf_supervised: systemd
 redis_conf_timeout: 60
-redis_conf_unixsocket: false
-redis_conf_unixsocket_location: "/tmp/redis.sock"
-redis_conf_unixsocket_permissions: 700
+redis_conf_unixsocket: true
+redis_conf_unixsocket_location: "/var/run/redis/redis.sock"
+redis_conf_unixsocket_permissions: 770
 redis_daemon: redis
 redis_package: redis
 redis_systemd_restart: false
