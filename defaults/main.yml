@@ -8,6 +8,7 @@ redis_conf_logfile: /var/log/redis/redis.log
 redis_conf_maxmemory: 1G
 redis_conf_maxmemory_policy: allkeys-lru
 redis_conf_pidfile: /var/run/redis/redis.pid
+redis_conf_port: 6379
 redis_conf_requirepass: false
 redis_conf_supervised: systemd
 redis_conf_timeout: 60

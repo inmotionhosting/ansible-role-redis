@@ -9,11 +9,7 @@ bind {{ redis_conf_bind }}
 protected-mode yes
 {% endif %}
 
-{% if redis_conf_unixsocket %}
-port 0
-{% else %}
-port 6379
-{% endif %}
+port {{ redis_conf_port }}
 
 {% if redis_conf_unixsocket %}
 unixsocket {{ redis_conf_unixsocket_location }}
