@@ -33,6 +33,7 @@ Available variables are listed below with their default values (you can also see
 | redis_conf_maxmemory | The maximum memory to be used by Redis.
 | redis_conf_maxmemory_policy | The memory handling policy to use.
 | redis_conf_pidfile | The location of the Redis pidfile.
+| redis_conf_port | Accept connections on the specified port.
 | redis_conf_requirepass | Whether a password is required to log in to Redis.
 | redis_conf_supervised | The init system Redis should target. <br><br>Default: `systemd`
 | redis_conf_timeout | The maximum time a client connection to Redis should live.
