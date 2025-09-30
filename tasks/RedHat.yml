@@ -24,7 +24,7 @@
   register: redis_installed
   vars:
     package: >-
-      {{ "@redis:remi-7.0" if version > "7"
-      else ("redis" if version == "7"
+      {{ "@redis:remi-8.2" if version > "8.2"
+      else ("redis" if version == "8.2"
       else "redis") }}
     version: "{{ ansible_distribution_major_version }}"
