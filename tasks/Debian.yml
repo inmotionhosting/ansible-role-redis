@@ -1,65 +1,49 @@
 ---
-- name: (Debian 9) Add backports repo for Redis 5
-  ansible.builtin.apt_repository:
-    repo: "deb http://ftp.debian.org/debian stretch-backports main"
-    state: present
-    filename: "stretch-backports"
-  when:
-    - ansible_distribution == "Debian"
-    - ansible_distribution_major_version == "9"
+# Install Redis from the official Redis repository for Debian/Ubuntu
+# See: https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis-on-linux/
 
-- name: (Debian 9) Install Redis from backports
-  ansible.builtin.package:
-    name: "{{ redis_package }}"
-    default_release: stretch-backports
-    state: present
-  register: redis_installed
-  when:
-    - ansible_distribution == "Debian"
-    - ansible_distribution_major_version == "9"
-
-- name: (Debian 10) Add backports repo for Redis
-  ansible.builtin.apt_repository:
-    repo: "deb http://ftp.debian.org/debian buster-backports main"
-    state: present
-    filename: "buster-backports"
-  when:
-    - ansible_distribution == "Debian"
-    - ansible_distribution_major_version == "10"
-
-- name: (Debian 10) Install Redis from backports
-  ansible.builtin.package:
-    name: "{{ redis_package }}"
-    default_release: buster-backports
-    state: present
-  register: redis_installed
-  when:
-    - ansible_distribution == "Debian"
-    - ansible_distribution_major_version == "10"
-
-- name: (Debian 11) Add backports repo for Redis
-  ansible.builtin.apt_repository:
-    repo: "deb http://ftp.debian.org/debian bullseye-backports main"
-    state: present
-    filename: "bullseye-backports"
-  when:
-    - ansible_distribution == "Debian"
-    - ansible_distribution_major_version == "11"
-
-- name: (Debian 11) Install Redis from backports
-  ansible.builtin.package:
-    name: "{{ redis_package }}"
-    default_release: bullseye-backports
-    state: present
-  register: redis_installed
-  when:
-    - ansible_distribution == "Debian"
-    - ansible_distribution_major_version == "11"
-
-- name: (Ubuntu) Update APT cache
+- name: (Debian/Ubuntu) Install required packages for Redis repository
   ansible.builtin.apt:
-    force_apt_get: true
-    update_cache: true
-    cache_valid_time: "3600"
+    name:
+      - curl
+      - gpg
     state: present
-  when: ansible_distribution == "Ubuntu"
+    update_cache: true
+
+- name: (Debian/Ubuntu) Create keyrings directory
+  ansible.builtin.file:
+    path: /usr/share/keyrings
+    state: directory
+    mode: "0755"
+
+- name: (Debian/Ubuntu) Download Redis GPG key
+  ansible.builtin.get_url:
+    url: https://packages.redis.io/gpg
+    dest: /tmp/redis-archive-keyring.gpg
+    mode: "0644"
+
+- name: (Debian/Ubuntu) Dearmor and install Redis GPG key
+  ansible.builtin.shell:
+    cmd: gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg < /tmp/redis-archive-keyring.gpg
+    creates: /usr/share/keyrings/redis-archive-keyring.gpg
+
+- name: (Debian/Ubuntu) Set permissions on Redis GPG key
+  ansible.builtin.file:
+    path: /usr/share/keyrings/redis-archive-keyring.gpg
+    mode: "0644"
+
+- name: (Debian/Ubuntu) Add official Redis repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb {{ ansible_distribution_release }} main"
+    state: present
+    filename: redis
+
+- name: (Debian/Ubuntu) Update APT cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: (Debian/Ubuntu) Install Redis from official repository
+  ansible.builtin.apt:
+    name: "{{ redis_package }}"
+    state: present
+  register: redis_installed
