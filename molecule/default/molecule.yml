@@ -16,13 +16,9 @@ platforms:
     pre_build_image: true
 
 provisioner:
-  name: "ansible"
-  config_options:
-    defaults:
-      callbacks_enabled: "profile_tasks, timer"
-      internal_poll_interval: 0.01
-      nocows: 1
-      var_compression_level: 9
+  name: ansible
+  playbooks:
+    converge: ${MOLECULE_PLAYBOOK:-converge.yml}
 
 verifier:
   name: ansible
