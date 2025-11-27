@@ -10,4 +10,4 @@
       when: ansible_os_family == 'Debian'
 
   roles:
-    - role: ansible-role-redis
+    - role: inmotionhosting.ansible-role-redis
