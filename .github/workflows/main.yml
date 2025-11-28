@@ -12,11 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro:
-          - ubuntu2404
-          - debian12
-          - rockylinux9
-          - centos7
+        include:
+          - distro: ubuntu2404
+            image: geerlingguy/docker-ubuntu2404-ansible:latest
+          - distro: debian12
+            image: geerlingguy/docker-debian12-ansible:latest
+          - distro: rockylinux9
+            image: geerlingguy/docker-rockylinux9-ansible:latest
+          - distro: centos7
+            image: geerlingguy/docker-centos7-ansible:latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,4 +35,4 @@ jobs:
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
-          MOLECULE_DISTRO: ${{ matrix.distro }}
+          MOLECULE_IMAGE: ${{ matrix.image }}
