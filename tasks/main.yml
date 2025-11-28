@@ -23,8 +23,7 @@
     or systemd_restart|default(False) )
     and systemd_restart_setting is defined
 
-- name: Enable and start redis service
+- name: Enable redis service
   ansible.builtin.service:
     name: "{{ redis_daemon }}"
-    state: started
     enabled: true

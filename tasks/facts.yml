@@ -19,6 +19,7 @@
       - redis_package
     redis_required_ints:
       - redis_conf_timeout
+      - redis_conf_port
 
 - name: Check required Redis variables (strings)
   ansible.builtin.fail:
@@ -63,3 +64,35 @@
     and redis_systemd_restart)
     or (systemd_restart is defined
     and systemd_restart)
+
+- name: Check variable 'redis_conf_unixsocket'
+  ansible.builtin.fail:
+    msg: |
+      Invalid value for variable 'redis_conf_unixsocket': '{{ redis_conf_unixsocket }}'
+
+      Supported types  : Boolean
+      Supported values : true, false
+  when: redis_conf_unixsocket is not sameas true and redis_conf_unixsocket is not sameas false
+
+- name: Check variable 'redis_conf_unixsocket_location'
+  ansible.builtin.fail:
+    msg: |
+      Invalid value for variable 'redis_conf_unixsocket_location': '{{ redis_conf_unixsocket_location }}'
+
+      Supported types  : String
+      Supported values : Any non-null string (path to socket file)
+  when:
+    - redis_conf_unixsocket | bool
+    - redis_conf_unixsocket_location is not string or redis_conf_unixsocket_location | length == 0
+
+- name: Check variable 'redis_module_stream'
+  ansible.builtin.fail:
+    msg: |
+      Invalid value for variable 'redis_module_stream': '{{ redis_module_stream }}'
+
+      Supported types  : String
+      Supported values : Any non-null string (e.g., 'remi-8.4', 'remi-7.2')
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version | int >= 8
+    - redis_module_stream is not string or redis_module_stream | length == 0
