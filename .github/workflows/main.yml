@@ -16,7 +16,6 @@ jobs:
           - ubuntu2404
           - debian12
           - rockylinux9
-          - geerlingguy/docker-centos7-ansible:latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
