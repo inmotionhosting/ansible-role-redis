@@ -7,7 +7,18 @@
 Modular Ansible Role for deploying and configuring Redis
 
 ## Requirements
-This Ansible role supports the two latest stable releases of Debian/Redhat Linux distributions and aims to follow their deprecation policies.
+
+This role supports the following platforms:
+
+- **RHEL/CentOS/AlmaLinux/RockyLinux**: 7, 8, 9
+- **Debian**: 12 (Bookworm), 13 (Trixie)
+- **Ubuntu**: 22.04 (Jammy), 24.04 (Noble)
+
+## Installation
+
+```bash
+ansible-galaxy install inmotionhosting.redis
+```
 
 ## Dependencies
 
@@ -15,33 +26,49 @@ None.
 
 ## Role Variables
 
-Available variables are listed below with their default values (you can also see `defaults/main.yml`)
+Available variables are listed below with their default values (see `defaults/main.yml`):
 
-| Variable | Definition |
-| -------- | ---------- |
-| redis_conf | The location of the Redis configuration file.
-| redis_conf_bind | The IP addresses Redis will bind to.
-| redis_conf_daemonize | Whether Redis should run as a daemon.
-| redis_conf_logfile | The location of the Redis log file.
-| redis_conf_maxmemory | The maximum memory to be used by Redis.
-| redis_conf_maxmemory_policy | The memory handling policy to use.
-| redis_conf_pidfile | The location of the Redis pidfile.
-| redis_conf_port | Accept connections on the specified port.
-| redis_conf_requirepass | Whether a password is required to log in to Redis.
-| redis_conf_supervised | The init system Redis should target. <br><br>Default: `systemd`
-| redis_conf_timeout | The maximum time a client connection to Redis should live.
-| redis_conf_unixsocket | Whether Redis should be configured to use a unix socket.
-| redis_conf_unixsocket_location | The location of the Redis unix socket file.
-| redis_conf_unixsocket_permissions | The unix permissions to set on the unix socket file.
-| redis_daemon | The name of the Redis daemon.
-| redis_module_stream | The DNF module stream to use for Redis on RHEL/EL systems (e.g., `remi-8.4`)
+| Variable | Default | Description |
+| -------- | ------- | ----------- |
+| `redis_conf` | `/etc/redis/redis.conf` | The location of the Redis configuration file. |
+| `redis_conf_bind` | `127.0.0.1` | The IP addresses Redis will bind to. |
+| `redis_conf_daemonize` | `yes` | Whether Redis should run as a daemon. |
+| `redis_conf_logfile` | `/var/log/redis/redis.log` | The location of the Redis log file. |
+| `redis_conf_maxmemory` | `1G` | The maximum memory to be used by Redis. |
+| `redis_conf_maxmemory_policy` | `allkeys-lru` | The memory eviction policy to use. |
+| `redis_conf_pidfile` | `/var/run/redis/redis.pid` | The location of the Redis pidfile. |
+| `redis_conf_port` | `6379` | The port Redis will listen on. |
+| `redis_conf_requirepass` | `false` | The password required to authenticate to Redis, or `false` to disable authentication. |
+| `redis_conf_supervised` | `systemd` | The init system Redis should notify. |
+| `redis_conf_timeout` | `60` | Client idle timeout in seconds (0 to disable). |
+| `redis_conf_unixsocket` | `true` | Whether to enable Unix socket connections. |
+| `redis_conf_unixsocket_location` | `/var/run/redis/redis.sock` | The location of the Redis Unix socket file. |
+| `redis_conf_unixsocket_permissions` | `770` | The permissions to set on the Unix socket file. |
+| `redis_daemon` | `redis` | The name of the Redis service. |
+| `redis_package` | `redis` | The Redis package name to install. |
+| `redis_module_stream` | `remi-8.4` | The DNF module stream for Redis on RHEL/EL 8+ (e.g., `remi-8.4`, `remi-7.2`). |
+| `redis_systemd_restart` | `false` | Whether to configure systemd restart behavior. |
+| `systemd_restart_setting` | `on-failure` | The systemd restart policy (`no`, `on-success`, `on-failure`, `on-abnormal`, `on-watchdog`, `on-abort`, `always`). |
 
 ## Example Playbook
+
+Basic usage:
 
 ```yaml
 - hosts: www
   roles:
     - role: inmotionhosting.redis
+```
+
+With custom configuration:
+
+```yaml
+- hosts: www
+  roles:
+    - role: inmotionhosting.redis
+      redis_conf_maxmemory: 2G
+      redis_conf_requirepass: "your_secure_password"
+      redis_conf_bind: "0.0.0.0"
 ```
 
 ## License

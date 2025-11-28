@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v6.17.2
+    rev: v25.11.1
     hooks:
       - id: ansible-lint
         name: Ansible-lint
@@ -16,4 +16,4 @@ repos:
           # If you want to use specific version of ansible-core or ansible, feel
           # free to override `additional_dependencies` in your own hook config
           # file.
-          - ansible-core>=2.13.11
+          - ansible-core>=2.16
