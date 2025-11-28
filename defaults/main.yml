@@ -17,6 +17,6 @@ redis_conf_unixsocket_location: "/var/run/redis/redis.sock"
 redis_conf_unixsocket_permissions: 770
 redis_daemon: redis
 redis_package: redis
-redis_module_stream: "remi-8.4"
+redis_module_stream: remi-8.4
 redis_systemd_restart: false
 systemd_restart_setting: on-failure
