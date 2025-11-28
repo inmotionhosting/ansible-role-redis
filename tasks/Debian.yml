@@ -15,7 +15,7 @@
     filename: redis
     update_cache: true
 
-- name: (Debian/Ubuntu) Install Redis from official repository
+- name: (Debian/Ubuntu) Install Redis
   ansible.builtin.apt:
     name: "{{ redis_package }}"
     state: present

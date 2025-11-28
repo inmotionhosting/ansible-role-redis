@@ -5,9 +5,7 @@
 #
 
 bind {{ redis_conf_bind }}
-{% if redis_version is version('4', '>=') %}
 protected-mode yes
-{% endif %}
 
 port {{ redis_conf_port }}
 
@@ -25,9 +23,7 @@ tcp-keepalive 300
 #
 
 daemonize {{ redis_conf_daemonize }}
-{% if redis_version is version('4', '>=') %}
 supervised {{ redis_conf_supervised }}
-{% endif %}
 pidfile {{ redis_conf_pidfile }}
 
 loglevel notice
@@ -35,9 +31,7 @@ logfile {{ redis_conf_logfile }}
 
 databases 16
 
-{% if redis_version is version('4', '>=') %}
 always-show-logo no
-{% endif -%}
 
 #
 # SNAPSHOTTING
@@ -59,17 +53,13 @@ dir /var/lib/redis
 # REPLICATION
 #
 
-{% if redis_version is version('5', '>=') %}
 replica-serve-stale-data yes
 replica-read-only yes
 replica-priority 100
-{% endif %}
 
-{% if redis_version is version('4', '>=') %}
 repl-diskless-sync no
 repl-diskless-sync-delay 5
 repl-disable-tcp-nodelay no
-{% endif -%}
 
 {% if redis_conf_requirepass %}
 #
@@ -86,7 +76,6 @@ requirepass {{ redis_conf_requirepass }}
 maxmemory {{ redis_conf_maxmemory }}
 maxmemory-policy {{ redis_conf_maxmemory_policy }}
 
-{% if redis_version is version('4', '>=') %}
 #
 # LAZY FREEING
 #
@@ -94,10 +83,7 @@ maxmemory-policy {{ redis_conf_maxmemory_policy }}
 lazyfree-lazy-eviction no
 lazyfree-lazy-expire no
 lazyfree-lazy-server-del no
-{% if redis_version is version('5', '>=') %}
 replica-lazy-flush no
-{% endif %}
-{% endif -%}
 
 #
 # APPEND ONLY MODE
@@ -115,9 +101,7 @@ auto-aof-rewrite-percentage 100
 auto-aof-rewrite-min-size 64mb
 
 aof-load-truncated yes
-{% if redis_version is version('4', '>=') %}
 aof-use-rdb-preamble yes
-{% endif -%}
 
 #
 # LUA SCRIPTING
@@ -151,10 +135,8 @@ notify-keyspace-events ""
 hash-max-ziplist-entries 512
 hash-max-ziplist-value 64
 
-{% if redis_version is version('4', '>=') %}
 list-max-ziplist-size -2
 list-compress-depth 0
-{% endif -%}
 
 set-max-intset-entries 512
 
@@ -163,25 +145,17 @@ zset-max-ziplist-value 64
 
 hll-sparse-max-bytes 3000
 
-{% if redis_version is version('5', '>=') %}
 stream-node-max-bytes 4096
 stream-node-max-entries 100
-{% endif -%}
 
 activerehashing yes
 
 client-output-buffer-limit normal 0 0 0
-{% if redis_version is version('5', '>=') %}
 client-output-buffer-limit replica 256mb 64mb 60
-{% endif %}
 client-output-buffer-limit pubsub 32mb 8mb 60
 
 hz 10
-{% if redis_version is version('5', '>=') %}
 dynamic-hz yes
-{% endif -%}
 
 aof-rewrite-incremental-fsync yes
-{% if redis_version is version('5', '>=') %}
 rdb-save-incremental-fsync yes
-{% endif %}
