@@ -1,5 +1,5 @@
 ---
-# defaults file for inmotion.redis
+# defaults file for inmotionhosting.redis
 
 redis_conf: /etc/redis/redis.conf
 redis_conf_bind: 127.0.0.1

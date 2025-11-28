@@ -1,8 +1,15 @@
 ---
-# handlers file for inmotion.redis
+# handlers file for inmotionhosting.redis
+
+- name: Validate redis config
+  ansible.builtin.command:
+    cmd: redis-server {{ redis_conf }} --test-memory 1
+  changed_when: false
+  listen: Restart redis
 
 - name: Restart redis
   ansible.builtin.systemd:
     daemon_reload: true
     name: "{{ redis_daemon }}"
     state: restarted
+  listen: Restart redis

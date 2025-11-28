@@ -96,3 +96,14 @@
     - ansible_os_family == "RedHat"
     - ansible_distribution_major_version | int >= 8
     - redis_module_stream is not string or redis_module_stream | length == 0
+
+- name: Check variable 'redis_conf_unixsocket_permissions'
+  ansible.builtin.fail:
+    msg: |
+      Invalid value for variable 'redis_conf_unixsocket_permissions': '{{ redis_conf_unixsocket_permissions }}'
+
+      Supported types  : Integer
+      Supported values : Unix file permissions (e.g., 770, 755, 700)
+  when:
+    - redis_conf_unixsocket | bool
+    - redis_conf_unixsocket_permissions | int < 0 or redis_conf_unixsocket_permissions | int > 777

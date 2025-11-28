@@ -7,6 +7,10 @@
     url: https://packages.redis.io/gpg
     dest: /etc/apt/trusted.gpg.d/redis.asc
     mode: "0644"
+  retries: 3
+  delay: 5
+  register: redis_gpg_key
+  until: redis_gpg_key is success
 
 - name: (Debian/Ubuntu) Add official Redis repository
   ansible.builtin.apt_repository:

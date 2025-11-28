@@ -7,6 +7,14 @@
 - name: Handle os_family errata
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
+- name: Ensure Redis config directory exists
+  ansible.builtin.file:
+    path: "{{ redis_conf | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
 - name: Configure Redis
   ansible.builtin.template:
     src: redis.conf.j2
@@ -23,7 +31,8 @@
     or systemd_restart|default(False) )
     and systemd_restart_setting is defined
 
-- name: Enable redis service
+- name: Enable and start redis service
   ansible.builtin.service:
     name: "{{ redis_daemon }}"
     enabled: true
+    state: started
