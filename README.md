@@ -7,16 +7,7 @@
 Modular Ansible Role for deploying and configuring Redis
 
 ## Requirements
-This Ansible role supports the two latest stable releases of specific
-server-focused Linux distributions and aims to follow their deprecation
-policies. Additionally we will focus on supporting the latest two stable
-releases of each, which at the time of writing are as follows:
-
-* CentOS 7.x
-* Debian 10 or later
-* Ubuntu 20.04 LTS or later
-* AlmaLinux 8.x or later
-* RockyLinux 8.x or later
+This Ansible role supports the two latest stable releases of Debian/Redhat Linux distributions and aims to follow their deprecation policies.
 
 ## Dependencies
 
@@ -43,6 +34,7 @@ Available variables are listed below with their default values (you can also see
 | redis_conf_unixsocket_location | The location of the Redis unix socket file.
 | redis_conf_unixsocket_permissions | The unix permissions to set on the unix socket file.
 | redis_daemon | The name of the Redis daemon.
+| redis_module_stream | The DNF module stream to use for Redis on RHEL/EL 8+ systems (e.g., `remi-8.4`)
 
 ## Example Playbook
 
