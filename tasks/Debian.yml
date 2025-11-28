@@ -19,4 +19,3 @@
   ansible.builtin.apt:
     name: "{{ redis_package }}"
     state: present
-  register: redis_installed

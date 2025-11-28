@@ -8,4 +8,3 @@
   ansible.builtin.dnf:
     name: "@redis:{{ redis_module_stream }}"
     state: present
-  register: redis_installed
