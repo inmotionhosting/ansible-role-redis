@@ -2,24 +2,18 @@
 # Install Redis from the official Redis repository for Debian/Ubuntu
 # See: https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis-on-linux/
 
-- name: (Debian/Ubuntu) Install Redis GPG key
-  ansible.builtin.get_url:
-    url: https://packages.redis.io/gpg
-    dest: /etc/apt/trusted.gpg.d/redis.asc
-    mode: "0644"
-  retries: 3
-  delay: 5
-  register: redis_gpg_key
-  until: redis_gpg_key is success
-
 - name: (Debian/Ubuntu) Add official Redis repository
-  ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/redis.asc] https://packages.redis.io/deb {{ ansible_distribution_release }} main"
+  ansible.builtin.deb822_repository:
+    name: redis
+    types: deb
+    uris: https://packages.redis.io/deb
+    suites: "{{ ansible_distribution_release }}"
+    components: main
+    signed_by: https://packages.redis.io/gpg
     state: present
-    filename: redis
-    update_cache: true
 
 - name: (Debian/Ubuntu) Install Redis
   ansible.builtin.apt:
     name: "{{ redis_package }}"
     state: present
+    update_cache: true
