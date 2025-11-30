@@ -2,7 +2,7 @@
 
 - name: (Debian) Include os_family vars
   ansible.builtin.include_vars: Debian.yml
-  when: ansible_os_family == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
 
 - name: Set lists of required variables
   ansible.builtin.set_fact:
@@ -87,8 +87,8 @@
       Supported types  : String
       Supported values : Any non-null string (e.g., 'remi-8.4', 'remi-7.2')
   when:
-    - ansible_os_family == "RedHat"
-    - ansible_distribution_major_version | int >= 8
+    - ansible_facts['os_family'] == "RedHat"
+    - ansible_facts['distribution_major_version'] | int >= 8
     - redis_module_stream is not string or redis_module_stream | length == 0
 
 - name: Check variable 'redis_conf_unixsocket_permissions'

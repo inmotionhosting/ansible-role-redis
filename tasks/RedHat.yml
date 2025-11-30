@@ -1,7 +1,7 @@
 ---
 - name: (RedHat) Install Remi repo
   ansible.builtin.dnf:
-    name: "https://rpms.remirepo.net/enterprise/remi-release-{{ ansible_distribution_major_version }}.rpm"
+    name: "https://rpms.remirepo.net/enterprise/remi-release-{{ ansible_facts['distribution_major_version'] }}.rpm"
     state: present
     disable_gpg_check: true
   retries: 3
@@ -14,7 +14,7 @@
     name: redis
     enablerepo: remi
     state: present
-  when: ansible_distribution_major_version == "7"
+  when: ansible_facts['distribution_major_version'] == "7"
 
 - name: (RedHat EL8+) Check current Redis module stream
   ansible.builtin.command:
@@ -22,11 +22,11 @@
   register: redis_module_enabled
   changed_when: false
   failed_when: false
-  when: ansible_distribution_major_version | int >= 8
+  when: ansible_facts['distribution_major_version'] | int >= 8
 
 - name: (RedHat EL8+) Handle module stream switch
   when:
-    - ansible_distribution_major_version | int >= 8
+    - ansible_facts['distribution_major_version'] | int >= 8
     - redis_module_enabled.rc == 0
     - redis_module_stream not in redis_module_enabled.stdout
   block:
@@ -44,4 +44,4 @@
   ansible.builtin.dnf:
     name: "@redis:{{ redis_module_stream }}"
     state: present
-  when: ansible_distribution_major_version | int >= 8
+  when: ansible_facts['distribution_major_version'] | int >= 8

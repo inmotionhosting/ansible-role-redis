@@ -5,16 +5,16 @@
     name: python3-apt
     state: present
   when:
-    - ansible_python_version is version('3.0', '>=')
-    - ansible_os_family == "Debian"
+    - ansible_facts['python_version'] is version('3.0', '>=')
+    - ansible_facts['os_family'] == "Debian"
 
 - name: (Debian/Python 2) Install python-apt package
   ansible.builtin.package:
     name: python-apt
     state: present
   when:
-    - ansible_python_version is version('3.0', '<')
-    - ansible_os_family == "Debian"
+    - ansible_facts['python_version'] is version('3.0', '<')
+    - ansible_facts['os_family'] == "Debian"
 
 - name: Gather package facts
   ansible.builtin.package_facts:
