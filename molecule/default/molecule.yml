@@ -19,6 +19,7 @@ provisioner:
   name: ansible
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+    verify: verify.yml
 
 verifier:
   name: ansible
