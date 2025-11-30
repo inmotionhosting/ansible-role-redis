@@ -28,9 +28,7 @@
 
       Supported types  : String
       Supported values : Any non-null string
-  when: >-
-    lookup('vars', item) is not string
-    or lookup('vars', item) == 0
+  when: lookup('vars', item) is not string
   with_items: "{{ redis_required_strings }}"
 
 - name: Check required Redis variables (integers)
@@ -53,17 +51,13 @@
       Supported types  : String
       Supported values : "no", "on-success", "on-failure", "on-abnormal",
                          "on-watchdog", "on-abort", "always"
-  failed_when: >-
-    systemd_restart_setting not in
-    ['no', 'on-success', 'on-failure', 'on-abnormal',
-    'on-watchdog', 'on-abort', 'always']
-    or systemd_restart_setting is not string
-    or systemd_restart_setting == 0
-  when: >-
-    (redis_systemd_restart is defined
-    and redis_systemd_restart)
-    or (systemd_restart is defined
-    and systemd_restart)
+  when:
+    - (redis_systemd_restart | default(false)) or (systemd_restart | default(false))
+    - >-
+      systemd_restart_setting is not string
+      or systemd_restart_setting not in
+      ['no', 'on-success', 'on-failure', 'on-abnormal',
+      'on-watchdog', 'on-abort', 'always']
 
 - name: Check variable 'redis_conf_unixsocket'
   ansible.builtin.fail:

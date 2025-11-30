@@ -71,6 +71,27 @@ With custom configuration:
       redis_conf_bind: "0.0.0.0"
 ```
 
+## Module Stream Switching (RHEL/EL 8+)
+
+On RHEL/EL 8+ systems, this role uses DNF module streams from the Remi repository. The role supports switching between module streams, which allows upgrading or downgrading Redis versions.
+
+To switch Redis versions, simply change the `redis_module_stream` variable:
+
+```yaml
+- hosts: www
+  roles:
+    - role: inmotionhosting.redis
+      redis_module_stream: remi-7.2  # Downgrade to Redis 7.2
+```
+
+When switching streams, the role will automatically:
+1. Detect the currently enabled stream
+2. Remove the existing Redis package
+3. Reset the module stream
+4. Install Redis from the new stream
+
+**Note:** Switching module streams requires a brief Redis service interruption.
+
 ## License
 
 GPLv3
