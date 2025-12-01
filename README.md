@@ -14,6 +14,13 @@ This role supports the following platforms:
 - **Debian**: 12 (Bookworm), 13 (Trixie)
 - **Ubuntu**: 22.04 (Jammy), 24.04 (Noble)
 
+## Package Sources
+
+This role installs Redis from third-party repositories to provide the latest stable versions:
+
+- **RHEL/CentOS/AlmaLinux/RockyLinux**: Installs from the [Remi repository](https://rpms.remirepo.net/)
+- **Debian/Ubuntu**: Installs from the [official Redis repository](https://redis.io/docs/latest/operate/oss_and_stack/install/archive/install-redis/install-redis-on-linux/)
+
 ## Installation
 
 ```bash
@@ -30,8 +37,6 @@ Available variables are listed below with their default values (see `defaults/ma
 
 | Variable | Default | Description |
 | -------- | ------- | ----------- |
-| `enable_remi_repo` | `true` | Whether to install Redis from Remi repository (RHEL). Set to `false` to use distribution packages. |
-| `enable_redis_repo` | `true` | Whether to install Redis from official Redis repository (Debian/Ubuntu). Set to `false` to use distribution packages. |
 | `redis_conf` | `/etc/redis/redis.conf` | The location of the Redis configuration file. |
 | `redis_conf_bind` | `127.0.0.1` | The IP addresses Redis will bind to. |
 | `redis_conf_daemonize` | `yes` | Whether Redis should run as a daemon. |
@@ -48,8 +53,7 @@ Available variables are listed below with their default values (see `defaults/ma
 | `redis_conf_unixsocket_permissions` | `770` | The permissions to set on the Unix socket file. |
 | `redis_daemon` | `redis` | The name of the Redis service. |
 | `redis_package` | `redis` | The Redis package name to install. |
-| `redis_module_stream` | `remi-8.4` | The Remi DNF module stream for Redis on RHEL/EL 8+ (e.g., `remi-8.4`, `remi-7.2`). Used when `enable_remi_repo` is `true`. |
-| `redis_distro_module_stream` | `6` | The distribution DNF module stream for Redis on RHEL/EL 8+ (e.g., `5`, `6`). Used when `enable_remi_repo` is `false`. |
+| `redis_module_stream` | `8.4` | The Redis version for the Remi DNF module stream on RHEL/EL 8+. Valid values: `7.2`, `8.0`, `8.2`, `8.4`. |
 | `redis_systemd_restart` | `false` | Whether to configure systemd restart behavior. |
 | `systemd_restart_setting` | `on-failure` | The systemd restart policy (`no`, `on-success`, `on-failure`, `on-abnormal`, `on-watchdog`, `on-abort`, `always`). |
 
@@ -84,14 +88,10 @@ To switch Redis versions, simply change the `redis_module_stream` variable:
 - hosts: www
   roles:
     - role: inmotionhosting.redis
-      redis_module_stream: remi-7.2  # Downgrade to Redis 7.2
+      redis_module_stream: "7.2"  # Downgrade to Redis 7.2
 ```
 
-When switching streams, the role will automatically:
-1. Detect the currently enabled stream
-2. Remove the existing Redis package
-3. Reset the module stream
-4. Install Redis from the new stream
+When switching streams, the role will automatically detect the currently enabled stream and use `dnf module switch-to` to switch to the new stream.
 
 **Note:** Switching module streams requires a brief Redis service interruption.
 
