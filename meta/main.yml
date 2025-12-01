@@ -13,6 +13,11 @@ galaxy_info:
         - "7"
         - "8"
         - "9"
+    - name: Fedora
+      versions:
+        - "41"
+        - "42"
+        - "43"
     - name: Debian
       versions:
         - bookworm

@@ -2,23 +2,35 @@
 # Install Redis from the official Redis repository for Debian/Ubuntu
 # See: https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis-on-linux/
 
-- name: (Debian/Ubuntu) Install python3-debian for deb822_repository
-  ansible.builtin.apt:
-    name: python3-debian
-    state: present
+# Install Redis from official Redis repository (when enable_redis_repo is true)
+- name: Install Redis from official repository
+  when: enable_redis_repo | bool
+  block:
+    - name: (Debian/Ubuntu) Install python3-debian for deb822_repository
+      ansible.builtin.apt:
+        name: python3-debian
+        state: present
 
-- name: (Debian/Ubuntu) Add official Redis repository
-  ansible.builtin.deb822_repository:
-    name: redis
-    types: deb
-    uris: https://packages.redis.io/deb
-    suites: "{{ ansible_facts['distribution_release'] }}"
-    components: main
-    signed_by: https://packages.redis.io/gpg
-    state: present
+    - name: (Debian/Ubuntu) Add official Redis repository
+      ansible.builtin.deb822_repository:
+        name: redis
+        types: deb
+        uris: https://packages.redis.io/deb
+        suites: "{{ ansible_facts['distribution_release'] }}"
+        components: main
+        signed_by: https://packages.redis.io/gpg
+        state: present
 
-- name: (Debian/Ubuntu) Install Redis
+    - name: (Debian/Ubuntu) Install Redis from official repo
+      ansible.builtin.apt:
+        name: "{{ redis_package }}"
+        state: present
+        update_cache: true
+
+# Install Redis from distribution repository (when enable_redis_repo is false)
+- name: (Debian/Ubuntu) Install Redis from distribution repo
   ansible.builtin.apt:
     name: "{{ redis_package }}"
     state: present
     update_cache: true
+  when: not (enable_redis_repo | bool)

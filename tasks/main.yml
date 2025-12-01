@@ -19,9 +19,9 @@
   ansible.builtin.template:
     src: redis.conf.j2
     dest: "{{ redis_conf }}"
-    owner: root
-    group: root
-    mode: "0644"
+    owner: redis
+    group: redis
+    mode: "0640"
   notify: Restart redis
 
 - name: Include systemd restart configuation

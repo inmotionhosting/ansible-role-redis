@@ -11,6 +11,7 @@ Modular Ansible Role for deploying and configuring Redis
 This role supports the following platforms:
 
 - **RHEL/CentOS/AlmaLinux/RockyLinux**: 7, 8, 9
+- **Fedora**: 41, 42, 43
 - **Debian**: 12 (Bookworm), 13 (Trixie)
 - **Ubuntu**: 22.04 (Jammy), 24.04 (Noble)
 
@@ -30,6 +31,8 @@ Available variables are listed below with their default values (see `defaults/ma
 
 | Variable | Default | Description |
 | -------- | ------- | ----------- |
+| `enable_remi_repo` | `true` | Whether to install Redis from Remi repository (RHEL/Fedora). Set to `false` to use distribution packages. |
+| `enable_redis_repo` | `true` | Whether to install Redis from official Redis repository (Debian/Ubuntu). Set to `false` to use distribution packages. |
 | `redis_conf` | `/etc/redis/redis.conf` | The location of the Redis configuration file. |
 | `redis_conf_bind` | `127.0.0.1` | The IP addresses Redis will bind to. |
 | `redis_conf_daemonize` | `yes` | Whether Redis should run as a daemon. |
@@ -46,7 +49,8 @@ Available variables are listed below with their default values (see `defaults/ma
 | `redis_conf_unixsocket_permissions` | `770` | The permissions to set on the Unix socket file. |
 | `redis_daemon` | `redis` | The name of the Redis service. |
 | `redis_package` | `redis` | The Redis package name to install. |
-| `redis_module_stream` | `remi-8.4` | The DNF module stream for Redis on RHEL/EL 8+ (e.g., `remi-8.4`, `remi-7.2`). |
+| `redis_module_stream` | `remi-8.4` | The Remi DNF module stream for Redis on RHEL/EL 8+ and Fedora (e.g., `remi-8.4`, `remi-7.2`). Used when `enable_remi_repo` is `true`. |
+| `redis_distro_module_stream` | `6` | The distribution DNF module stream for Redis on RHEL/EL 8+ (e.g., `5`, `6`). Used when `enable_remi_repo` is `false`. |
 | `redis_systemd_restart` | `false` | Whether to configure systemd restart behavior. |
 | `systemd_restart_setting` | `on-failure` | The systemd restart policy (`no`, `on-success`, `on-failure`, `on-abnormal`, `on-watchdog`, `on-abort`, `always`). |
 
@@ -71,9 +75,9 @@ With custom configuration:
       redis_conf_bind: "0.0.0.0"
 ```
 
-## Module Stream Switching (RHEL/EL 8+)
+## Module Stream Switching (RHEL/EL 8+ and Fedora)
 
-On RHEL/EL 8+ systems, this role uses DNF module streams from the Remi repository. The role supports switching between module streams, which allows upgrading or downgrading Redis versions.
+On RHEL/EL 8+ and Fedora systems, this role uses DNF module streams from the Remi repository. The role supports switching between module streams, which allows upgrading or downgrading Redis versions.
 
 To switch Redis versions, simply change the `redis_module_stream` variable:
 

@@ -1,6 +1,10 @@
 ---
 # defaults file for inmotionhosting.redis
 
+# Repository settings
+enable_remi_repo: true
+enable_redis_repo: true
+
 redis_conf: /etc/redis/redis.conf
 redis_conf_bind: 127.0.0.1
 redis_conf_daemonize: "yes"
@@ -18,5 +22,6 @@ redis_conf_unixsocket_permissions: 770
 redis_daemon: redis
 redis_package: redis
 redis_module_stream: remi-8.4
+redis_distro_module_stream: "6"
 redis_systemd_restart: false
 systemd_restart_setting: on-failure
