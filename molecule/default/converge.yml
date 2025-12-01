@@ -16,4 +16,4 @@
       when: ansible_facts['os_family'] == 'Debian'
 
   roles:
-    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+    - role: 'inmotionhosting.redis'
