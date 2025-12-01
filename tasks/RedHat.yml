@@ -3,17 +3,9 @@
 - name: Install Redis from Remi repository
   when: enable_remi_repo | bool
   block:
-    - name: Set Remi repo path based on distribution
-      ansible.builtin.set_fact:
-        remi_repo_path: "{{ 'fedora' if ansible_facts['distribution'] == 'Fedora' else 'enterprise' }}"
-
-    - name: Set Remi repo URL
-      ansible.builtin.set_fact:
-        remi_repo_url: "https://rpms.remirepo.net/{{ remi_repo_path }}/remi-release-{{ ansible_facts['distribution_major_version'] }}.rpm"
-
-    - name: (RedHat/Fedora) Install Remi repo
+    - name: (RedHat) Install Remi repo
       ansible.builtin.dnf:
-        name: "{{ remi_repo_url }}"
+        name: "https://rpms.remirepo.net/enterprise/remi-release-{{ ansible_facts['distribution_major_version'] }}.rpm"
         state: present
         disable_gpg_check: true
       retries: 3
@@ -26,63 +18,47 @@
         name: redis
         enablerepo: remi
         state: present
-      when:
-        - ansible_facts['distribution'] != 'Fedora'
-        - ansible_facts['distribution_major_version'] == "7"
+      when: ansible_facts['distribution_major_version'] == "7"
 
-    - name: (RedHat EL8+/Fedora) Check current Redis module stream
+    - name: (RedHat EL8+) Check current Redis module stream
       ansible.builtin.command:
         cmd: dnf module list --enabled redis
       register: redis_module_enabled
       changed_when: false
       failed_when: false
-      when: >-
-        ansible_facts['distribution'] == 'Fedora'
-        or ansible_facts['distribution_major_version'] | int >= 8
+      when: ansible_facts['distribution_major_version'] | int >= 8
 
-    - name: (RedHat EL8+/Fedora) Handle module stream switch
+    - name: (RedHat EL8+) Handle module stream switch
       when:
-        - >-
-          ansible_facts['distribution'] == 'Fedora'
-          or ansible_facts['distribution_major_version'] | int >= 8
+        - ansible_facts['distribution_major_version'] | int >= 8
         - redis_module_enabled.rc == 0
         - redis_module_stream not in redis_module_enabled.stdout
       block:
-        - name: (RedHat EL8+/Fedora) Remove Redis before stream switch
+        - name: (RedHat EL8+) Remove Redis before stream switch
           ansible.builtin.dnf:
             name: redis
             state: absent
 
-        - name: (RedHat EL8+/Fedora) Reset Redis module stream
+        - name: (RedHat EL8+) Reset Redis module stream
           ansible.builtin.command:
             cmd: dnf module reset redis -y
           changed_when: true
 
-    - name: (RedHat EL8+/Fedora) Install Redis from Remi module stream
+    - name: (RedHat EL8+) Install Redis from Remi module stream
       ansible.builtin.dnf:
         name: "@redis:{{ redis_module_stream }}"
         state: present
-      when: >-
-        ansible_facts['distribution'] == 'Fedora'
-        or ansible_facts['distribution_major_version'] | int >= 8
+      when: ansible_facts['distribution_major_version'] | int >= 8
 
 # Install Redis from distribution repository (when enable_remi_repo is false)
 - name: Install Redis from distribution repository
   when: not (enable_remi_repo | bool)
   block:
-    - name: (Fedora) Install Redis from distribution repo
-      ansible.builtin.dnf:
-        name: "{{ redis_package }}"
-        state: present
-      when: ansible_facts['distribution'] == 'Fedora'
-
     - name: (RedHat EL7) Install Redis from distribution repo
       ansible.builtin.dnf:
         name: "{{ redis_package }}"
         state: present
-      when:
-        - ansible_facts['distribution'] != 'Fedora'
-        - ansible_facts['distribution_major_version'] == "7"
+      when: ansible_facts['distribution_major_version'] == "7"
 
     - name: (RedHat EL8+) Check current distro Redis module stream
       ansible.builtin.command:
@@ -90,13 +66,10 @@
       register: distro_module_enabled
       changed_when: false
       failed_when: false
-      when:
-        - ansible_facts['distribution'] != 'Fedora'
-        - ansible_facts['distribution_major_version'] | int >= 8
+      when: ansible_facts['distribution_major_version'] | int >= 8
 
     - name: (RedHat EL8+) Handle distro module stream switch
       when:
-        - ansible_facts['distribution'] != 'Fedora'
         - ansible_facts['distribution_major_version'] | int >= 8
         - distro_module_enabled.rc == 0
         - redis_distro_module_stream not in distro_module_enabled.stdout
@@ -115,6 +88,4 @@
       ansible.builtin.dnf:
         name: "@redis:{{ redis_distro_module_stream }}"
         state: present
-      when:
-        - ansible_facts['distribution'] != 'Fedora'
-        - ansible_facts['distribution_major_version'] | int >= 8
+      when: ansible_facts['distribution_major_version'] | int >= 8
