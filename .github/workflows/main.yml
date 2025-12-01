@@ -16,6 +16,7 @@ jobs:
           - geerlingguy/docker-ubuntu2404-ansible:latest
           - combssm/docker-debian12-ansible:latest
           - combssm/docker-almalinux9-ansible:latest
+          - geerlingguy/docker-fedora-42-ansible:latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
