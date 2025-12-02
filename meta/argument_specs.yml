@@ -34,12 +34,12 @@ argument_specs:
         type: str
         default: allkeys-lru
         choices:
-          - noeviction
-          - allkeys-lru
           - allkeys-lfu
+          - allkeys-lru
           - allkeys-random
-          - volatile-lru
+          - noeviction
           - volatile-lfu
+          - volatile-lru
           - volatile-random
           - volatile-ttl
         description: Eviction policy when maxmemory is reached
@@ -63,10 +63,10 @@ argument_specs:
         type: str
         default: systemd
         choices:
-          - "no"
-          - upstart
-          - systemd
           - auto
+          - "no"
+          - systemd
+          - upstart
         description: Supervision system Redis should notify
 
       redis_conf_timeout:
