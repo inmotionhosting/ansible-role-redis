@@ -93,21 +93,3 @@ argument_specs:
         type: str
         default: redis
         description: Name of the Redis package to install
-
-      redis_systemd_restart:
-        type: bool
-        default: false
-        description: Whether to configure systemd restart behavior
-
-      systemd_restart_setting:
-        type: str
-        default: on-failure
-        choices:
-          - "no"
-          - on-success
-          - on-failure
-          - on-abnormal
-          - on-watchdog
-          - on-abort
-          - always
-        description: Systemd restart policy for the Redis service

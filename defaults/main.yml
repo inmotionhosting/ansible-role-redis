@@ -15,5 +15,3 @@ redis_conf_unixsocket: true
 redis_conf_unixsocket_location: "/var/run/redis/redis.sock"
 redis_conf_unixsocket_permissions: 770
 redis_package: redis
-redis_systemd_restart: false
-systemd_restart_setting: on-failure

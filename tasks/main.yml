@@ -24,13 +24,6 @@
     mode: "0640"
   notify: Restart redis
 
-- name: Include systemd restart configuation
-  ansible.builtin.include_tasks: systemd.yml
-  when: >-
-    ( redis_systemd_restart|default(False)
-    or systemd_restart|default(False) )
-    and systemd_restart_setting is defined
-
 - name: Enable and start redis service
   ansible.builtin.service:
     name: redis

@@ -51,8 +51,6 @@ Available variables are listed below with their default values (see `defaults/ma
 | `redis_conf_unixsocket_location` | `/var/run/redis/redis.sock` | The location of the Redis Unix socket file. |
 | `redis_conf_unixsocket_permissions` | `770` | The permissions to set on the Unix socket file. |
 | `redis_package` | `redis` | The Redis package name to install. |
-| `redis_systemd_restart` | `false` | Whether to configure systemd restart behavior. |
-| `systemd_restart_setting` | `on-failure` | The systemd restart policy (`no`, `on-success`, `on-failure`, `on-abnormal`, `on-watchdog`, `on-abort`, `always`). |
 
 ## Example Playbook
 

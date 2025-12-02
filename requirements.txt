@@ -5,3 +5,4 @@ ansible
 molecule-plugins[docker]
 molecule
 pre-commit
+netaddr
