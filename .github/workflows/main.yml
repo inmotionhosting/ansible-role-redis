@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         distro:
-          - geerlingguy/docker-ubuntu2404-ansible:latest
+          - combssm/docker-ubuntu2404-ansible:latest
           - combssm/docker-debian12-ansible:latest
           - combssm/docker-almalinux9-ansible:latest
     steps:
