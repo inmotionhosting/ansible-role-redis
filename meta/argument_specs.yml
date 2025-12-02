@@ -12,23 +12,47 @@ argument_specs:
         default: "127.0.0.1"
         description: IP address(es) Redis will bind to (space-separated for multiple)
 
-      redis_conf_daemonize:
+      redis_conf_io_threads:
+        type: raw
+        default: "{{ ansible_facts['processor_vcpus'] - 1 if ansible_facts['processor_vcpus'] | default(2) > 1 else 1 }}"
+        description: Number of I/O threads (default is number of CPU cores minus 1, minimum 1)
+
+      redis_conf_lazyfree_lazy_eviction:
         type: str
         default: "yes"
         choices:
           - "yes"
           - "no"
-        description: Whether Redis should run as a daemon
+        description: Use lazy freeing on eviction (improves performance)
 
-      redis_conf_logfile:
+      redis_conf_lazyfree_lazy_expire:
         type: str
-        default: /var/log/redis/redis.log
-        description: Path to the Redis log file
+        default: "yes"
+        choices:
+          - "yes"
+          - "no"
+        description: Use lazy freeing on key expiration (improves performance)
+
+      redis_conf_lazyfree_lazy_server_del:
+        type: str
+        default: "yes"
+        choices:
+          - "yes"
+          - "no"
+        description: Use lazy freeing on server-side DEL operations (improves performance)
+
+      redis_conf_replica_lazy_flush:
+        type: str
+        default: "yes"
+        choices:
+          - "yes"
+          - "no"
+        description: Use lazy freeing on replica FLUSHALL/FLUSHDB (improves performance)
 
       redis_conf_maxmemory:
         type: str
-        default: "1G"
-        description: Maximum memory Redis can use (e.g., 1G, 512M)
+        default: ""
+        description: Maximum memory Redis can use (e.g., 1G, 512M). Empty for no limit.
 
       redis_conf_maxmemory_policy:
         type: str
@@ -44,11 +68,6 @@ argument_specs:
           - volatile-ttl
         description: Eviction policy when maxmemory is reached
 
-      redis_conf_pidfile:
-        type: str
-        default: /run/redis/redis-server.pid
-        description: Path to the Redis PID file
-
       redis_conf_port:
         type: int
         default: 6379
@@ -59,37 +78,17 @@ argument_specs:
         default: false
         description: Password for Redis authentication, or false to disable
 
-      redis_conf_supervised:
-        type: str
-        default: systemd
-        choices:
-          - auto
-          - "no"
-          - systemd
-          - upstart
-        description: Supervision system Redis should notify
-
       redis_conf_timeout:
         type: int
         default: 60
         description: Client idle timeout in seconds (0 to disable)
 
-      redis_conf_unixsocket:
-        type: bool
-        default: true
-        description: Whether to enable Unix socket connections
-
-      redis_conf_unixsocket_location:
+      redis_conf_unixsocket_path:
         type: str
-        default: /var/run/redis/redis.sock
-        description: Path to the Redis Unix socket file
+        default: ""
+        description: Path to the Redis Unix socket file (empty to disable)
 
       redis_conf_unixsocket_permissions:
         type: int
         default: 770
-        description: Unix permissions for the socket file (e.g., 770, 755)
-
-      redis_package:
-        type: str
-        default: redis
-        description: Name of the Redis package to install
+        description: Unix permissions for the socket file (e.g., 770, 700)

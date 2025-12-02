@@ -38,19 +38,18 @@ Available variables are listed below with their default values (see `defaults/ma
 | Variable | Default | Description |
 | -------- | ------- | ----------- |
 | `redis_conf_bind` | `127.0.0.1` | The IP addresses Redis will bind to. |
-| `redis_conf_daemonize` | `yes` | Whether Redis should run as a daemon. |
-| `redis_conf_logfile` | `/var/log/redis/redis.log` | The location of the Redis log file. |
-| `redis_conf_maxmemory` | `1G` | The maximum memory to be used by Redis. |
+| `redis_conf_io_threads` | `(CPU cores - 1)` | Number of I/O threads for threaded I/O (minimum 1). |
+| `redis_conf_lazyfree_lazy_eviction` | `yes` | Use lazy freeing on eviction (improves performance). |
+| `redis_conf_lazyfree_lazy_expire` | `yes` | Use lazy freeing on key expiration (improves performance). |
+| `redis_conf_lazyfree_lazy_server_del` | `yes` | Use lazy freeing on server-side DEL operations (improves performance). |
+| `redis_conf_replica_lazy_flush` | `yes` | Use lazy freeing on replica FLUSHALL/FLUSHDB (improves performance). |
+| `redis_conf_maxmemory` | `""` | Maximum memory limit (e.g., 1G, 512M). Empty for no limit. |
 | `redis_conf_maxmemory_policy` | `allkeys-lru` | The memory eviction policy to use. |
-| `redis_conf_pidfile` | `/run/redis/redis-server.pid` | The location of the Redis pidfile. |
 | `redis_conf_port` | `6379` | The port Redis will listen on. |
 | `redis_conf_requirepass` | `false` | The password required to authenticate to Redis, or `false` to disable authentication. |
-| `redis_conf_supervised` | `systemd` | The init system Redis should notify. |
 | `redis_conf_timeout` | `60` | Client idle timeout in seconds (0 to disable). |
-| `redis_conf_unixsocket` | `true` | Whether to enable Unix socket connections. |
-| `redis_conf_unixsocket_location` | `/var/run/redis/redis.sock` | The location of the Redis Unix socket file. |
+| `redis_conf_unixsocket_path` | `""` | Path to the Redis Unix socket file (empty to disable). |
 | `redis_conf_unixsocket_permissions` | `770` | The permissions to set on the Unix socket file. |
-| `redis_package` | `redis` | The Redis package name to install. |
 
 ## Example Playbook
 

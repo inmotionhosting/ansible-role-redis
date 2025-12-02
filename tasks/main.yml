@@ -8,9 +8,9 @@
   ansible.builtin.file:
     path: /etc/redis
     state: directory
-    owner: root
-    group: root
-    mode: "0755"
+    owner: redis
+    group: redis
+    mode: "0770"
 
 - name: Configure Redis
   ansible.builtin.template:

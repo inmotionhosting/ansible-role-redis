@@ -19,5 +19,5 @@
 
 - name: (RedHat) Install Redis
   ansible.builtin.dnf:
-    name: "{{ redis_package }}"
+    name: redis
     state: present

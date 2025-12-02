@@ -9,8 +9,8 @@ protected-mode yes
 
 port {{ redis_conf_port }}
 
-{% if redis_conf_unixsocket %}
-unixsocket {{ redis_conf_unixsocket_location }}
+{% if redis_conf_unixsocket_path %}
+unixsocket {{ redis_conf_unixsocket_path }}
 unixsocketperm {{ redis_conf_unixsocket_permissions }}
 {% endif -%}
 
@@ -22,12 +22,10 @@ tcp-keepalive 300
 # GENERAL
 #
 
-daemonize {{ redis_conf_daemonize }}
-supervised {{ redis_conf_supervised }}
-pidfile {{ redis_conf_pidfile }}
+supervised auto
 
 loglevel notice
-logfile {{ redis_conf_logfile }}
+logfile /var/log/redis/redis-server.log
 
 databases 16
 
@@ -73,17 +71,25 @@ requirepass {{ redis_conf_requirepass }}
 # MEMORY MANAGEMENT
 #
 
+{% if redis_conf_maxmemory %}
 maxmemory {{ redis_conf_maxmemory }}
+{% endif -%}
 maxmemory-policy {{ redis_conf_maxmemory_policy }}
 
 #
 # LAZY FREEING
 #
 
-lazyfree-lazy-eviction yes
-lazyfree-lazy-expire yes
-lazyfree-lazy-server-del yes
-replica-lazy-flush yes
+lazyfree-lazy-eviction {{ redis_conf_lazyfree_lazy_eviction }}
+lazyfree-lazy-expire {{ redis_conf_lazyfree_lazy_expire }}
+lazyfree-lazy-server-del {{ redis_conf_lazyfree_lazy_server_del }}
+replica-lazy-flush {{ redis_conf_replica_lazy_flush }}
+
+#
+# THREADED I/O
+#
+
+io-threads {{ redis_conf_io_threads }}
 
 #
 # APPEND ONLY MODE
@@ -159,3 +165,9 @@ dynamic-hz yes
 
 aof-rewrite-incremental-fsync yes
 rdb-save-incremental-fsync yes
+
+#
+# INCLUDES
+#
+
+include /etc/redis/conf.d/*.conf
