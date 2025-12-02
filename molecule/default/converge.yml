@@ -3,6 +3,10 @@
   hosts: all
 
   pre_tasks:
+    - name: Display MOLECULE_PROJECT_DIRECTORY
+      ansible.builtin.debug:
+        var: lookup('env', 'MOLECULE_PROJECT_DIRECTORY')
+
     - name: Display current distribution info
       ansible.builtin.debug:
         msg: >-
