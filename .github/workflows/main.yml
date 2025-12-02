@@ -5,6 +5,15 @@ on:  # yamllint disable-line rule:truthy
     branches: [master]
   pull_request:
     branches: [master]
+  release:
+    types: [published]
+  schedule:
+    # Run every Tuesday at 4:00 PM UTC
+    - cron: '0 16 * * 2'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   molecule:
@@ -19,8 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
 
       - name: Install test dependencies
         run: pip install -r requirements.txt
@@ -31,3 +38,22 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_IMAGE: ${{ matrix.distro }}
+
+  release:
+    name: Publish to Galaxy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    needs: molecule
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+
+      - name: Install Ansible
+        run: pip install ansible
+
+      - name: Publish to Ansible Galaxy
+        run: >-
+          ansible-galaxy role import
+          --token ${{ secrets.GALAXY_API_KEY }}
+          ${{ github.repository_owner }}
+          ${{ github.event.repository.name }}
