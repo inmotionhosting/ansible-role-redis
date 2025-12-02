@@ -1,102 +1,47 @@
 ---
+# Custom validations not covered by argument_specs
 
-- name: (Debian) Include os_family vars
-  ansible.builtin.include_vars: Debian.yml
-  when: ansible_facts['os_family'] == "Debian"
-
-- name: Set lists of required variables
-  ansible.builtin.set_fact:
-    redis_required_strings:
-      - redis_conf
-      - redis_daemon
-      - redis_conf_bind
-      - redis_conf_daemonize
-      - redis_conf_supervised
-      - redis_conf_pidfile
-      - redis_conf_logfile
-      - redis_conf_maxmemory
-      - redis_conf_maxmemory_policy
-      - redis_package
-    redis_required_ints:
-      - redis_conf_timeout
-      - redis_conf_port
-
-- name: Check required Redis variables (strings)
+- name: Check variable 'redis_conf_port' (valid port range)
   ansible.builtin.fail:
     msg: |
-      Invalid value for variable for '{{ item }}': {{ lookup('vars', item) }}
+      Invalid value for variable 'redis_conf_port': '{{ redis_conf_port }}'
 
-      Supported types  : String
-      Supported values : Any non-null string
-  when: lookup('vars', item) is not string
-  with_items: "{{ redis_required_strings }}"
+      Supported values : A port number between 0-65535
+  when: redis_conf_port | int < 0 or redis_conf_port | int > 65535
 
-- name: Check required Redis variables (integers)
+- name: Check variable 'redis_conf_timeout' (non-negative)
   ansible.builtin.fail:
     msg: |
-      Invalid value for variable for '{{ item }}': {{ lookup('vars', item) }}
+      Invalid value for variable 'redis_conf_timeout': '{{ redis_conf_timeout }}'
 
-      Supported types  : Integer
-      Supported values : A number between 0-65535
+      Supported values : 0 (disabled) or any positive integer (seconds)
+  when: redis_conf_timeout | int < 0
+
+- name: Check variable 'redis_conf_bind' (valid IP addresses)
+  ansible.builtin.fail:
+    msg: |
+      Invalid value for variable 'redis_conf_bind': '{{ redis_conf_bind }}'
+
+      Supported values : Valid IPv4 or IPv6 address(es), space-separated
   when: >-
-    lookup('vars', item)|int < 0
-    or lookup('vars', item)|int > 65535
-  with_items: "{{ redis_required_ints }}"
+    redis_conf_bind | length == 0
+    or redis_conf_bind.split() | map('ansible.utils.ipaddr') | select('eq', false) | list | length > 0
 
-- name: Check variable 'systemd_restart_setting'
-  ansible.builtin.fail:
-    msg: |
-      Invalid value for variable 'systemd_restart_setting': '{{ systemd_restart_setting }}'
-
-      Supported types  : String
-      Supported values : "no", "on-success", "on-failure", "on-abnormal",
-                         "on-watchdog", "on-abort", "always"
-  when:
-    - (redis_systemd_restart | default(false)) or (systemd_restart | default(false))
-    - >-
-      systemd_restart_setting is not string
-      or systemd_restart_setting not in
-      ['no', 'on-success', 'on-failure', 'on-abnormal',
-      'on-watchdog', 'on-abort', 'always']
-
-- name: Check variable 'redis_conf_unixsocket'
-  ansible.builtin.fail:
-    msg: |
-      Invalid value for variable 'redis_conf_unixsocket': '{{ redis_conf_unixsocket }}'
-
-      Supported types  : Boolean
-      Supported values : true, false
-  when: redis_conf_unixsocket is not sameas true and redis_conf_unixsocket is not sameas false
-
-- name: Check variable 'redis_conf_unixsocket_location'
+- name: Check variable 'redis_conf_unixsocket_location' (required when socket enabled)
   ansible.builtin.fail:
     msg: |
       Invalid value for variable 'redis_conf_unixsocket_location': '{{ redis_conf_unixsocket_location }}'
 
-      Supported types  : String
-      Supported values : Any non-null string (path to socket file)
+      Supported values : Any non-empty string (path to socket file)
   when:
     - redis_conf_unixsocket | bool
-    - redis_conf_unixsocket_location is not string or redis_conf_unixsocket_location | length == 0
+    - redis_conf_unixsocket_location | length == 0
 
-- name: Check variable 'redis_module_stream'
-  ansible.builtin.fail:
-    msg: |
-      Invalid value for variable 'redis_module_stream': '{{ redis_module_stream }}'
-
-      Supported types  : String
-      Supported values : "7.2", "8.0", "8.2", "8.4"
-  when:
-    - ansible_facts['os_family'] == "RedHat"
-    - ansible_facts['distribution_major_version'] | int >= 8
-    - redis_module_stream not in ['7.2', '8.0', '8.2', '8.4']
-
-- name: Check variable 'redis_conf_unixsocket_permissions'
+- name: Check variable 'redis_conf_unixsocket_permissions' (valid octal range)
   ansible.builtin.fail:
     msg: |
       Invalid value for variable 'redis_conf_unixsocket_permissions': '{{ redis_conf_unixsocket_permissions }}'
 
-      Supported types  : Integer
       Supported values : Unix file permissions (e.g., 770, 755, 700)
   when:
     - redis_conf_unixsocket | bool

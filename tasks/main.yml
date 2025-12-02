@@ -9,7 +9,7 @@
 
 - name: Ensure Redis config directory exists
   ansible.builtin.file:
-    path: "{{ redis_conf | dirname }}"
+    path: /etc/redis
     state: directory
     owner: root
     group: root
@@ -18,7 +18,7 @@
 - name: Configure Redis
   ansible.builtin.template:
     src: redis.conf.j2
-    dest: "{{ redis_conf }}"
+    dest: /etc/redis/redis.conf
     owner: redis
     group: redis
     mode: "0640"
@@ -33,6 +33,6 @@
 
 - name: Enable and start redis service
   ansible.builtin.service:
-    name: "{{ redis_daemon }}"
+    name: redis
     enabled: true
     state: started

@@ -1,0 +1,113 @@
+---
+argument_specs:
+  main:
+    short_description: Deploy and configure Redis
+    description:
+      - Installs Redis from the official Redis repository
+      - Configures Redis with customizable settings
+      - Supports RHEL/CentOS/AlmaLinux 8-9, Debian 12-13, Ubuntu 22.04-24.04
+    options:
+      redis_conf_bind:
+        type: str
+        default: "127.0.0.1"
+        description: IP address(es) Redis will bind to (space-separated for multiple)
+
+      redis_conf_daemonize:
+        type: str
+        default: "yes"
+        choices:
+          - "yes"
+          - "no"
+        description: Whether Redis should run as a daemon
+
+      redis_conf_logfile:
+        type: str
+        default: /var/log/redis/redis.log
+        description: Path to the Redis log file
+
+      redis_conf_maxmemory:
+        type: str
+        default: "1G"
+        description: Maximum memory Redis can use (e.g., 1G, 512M)
+
+      redis_conf_maxmemory_policy:
+        type: str
+        default: allkeys-lru
+        choices:
+          - noeviction
+          - allkeys-lru
+          - allkeys-lfu
+          - allkeys-random
+          - volatile-lru
+          - volatile-lfu
+          - volatile-random
+          - volatile-ttl
+        description: Eviction policy when maxmemory is reached
+
+      redis_conf_pidfile:
+        type: str
+        default: /run/redis/redis-server.pid
+        description: Path to the Redis PID file
+
+      redis_conf_port:
+        type: int
+        default: 6379
+        description: Port Redis will listen on (0-65535)
+
+      redis_conf_requirepass:
+        type: raw
+        default: false
+        description: Password for Redis authentication, or false to disable
+
+      redis_conf_supervised:
+        type: str
+        default: systemd
+        choices:
+          - "no"
+          - upstart
+          - systemd
+          - auto
+        description: Supervision system Redis should notify
+
+      redis_conf_timeout:
+        type: int
+        default: 60
+        description: Client idle timeout in seconds (0 to disable)
+
+      redis_conf_unixsocket:
+        type: bool
+        default: true
+        description: Whether to enable Unix socket connections
+
+      redis_conf_unixsocket_location:
+        type: str
+        default: /var/run/redis/redis.sock
+        description: Path to the Redis Unix socket file
+
+      redis_conf_unixsocket_permissions:
+        type: int
+        default: 770
+        description: Unix permissions for the socket file (e.g., 770, 755)
+
+      redis_package:
+        type: str
+        default: redis
+        description: Name of the Redis package to install
+
+      redis_systemd_restart:
+        type: bool
+        default: false
+        description: Whether to configure systemd restart behavior
+
+      systemd_restart_setting:
+        type: str
+        default: on-failure
+        choices:
+          - "no"
+          - on-success
+          - on-failure
+          - on-abnormal
+          - on-watchdog
+          - on-abort
+          - always
+        description: Systemd restart policy for the Redis service

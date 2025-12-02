@@ -19,7 +19,7 @@
 
 - name: Creates service directory
   ansible.builtin.file:
-    path: /etc/systemd/system/{{ redis_daemon }}.service.d
+    path: /etc/systemd/system/redis.service.d
     state: directory
     owner: root
     group: root
@@ -28,7 +28,7 @@
 - name: Create service file
   ansible.builtin.template:
     src: etc/systemd/restart.conf.j2
-    dest: /etc/systemd/system/{{ redis_daemon }}.service.d/restart.conf
+    dest: /etc/systemd/system/redis.service.d/restart.conf
     owner: root
     group: root
     mode: "0600"

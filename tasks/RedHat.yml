@@ -1,44 +1,23 @@
 ---
-# Install Redis from the Remi repository for RHEL/CentOS/AlmaLinux/RockyLinux
-# See: https://rpms.remirepo.net/
+# Install Redis from the official Redis repository for RHEL/CentOS/AlmaLinux/RockyLinux
+# See: https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/rpm/
 
-- name: (RedHat) Install Remi repo
-  ansible.builtin.dnf:
-    name: "https://rpms.remirepo.net/enterprise/remi-release-{{ ansible_facts['distribution_major_version'] }}.rpm"
+- name: (RedHat) Import Redis GPG key
+  ansible.builtin.rpm_key:
+    key: https://packages.redis.io/gpg
     state: present
-    disable_gpg_check: true
-  retries: 3
-  delay: 5
-  register: remi_repo
-  until: remi_repo is success
 
-- name: (RedHat EL7) Install Redis from Remi
-  ansible.builtin.dnf:
+- name: (RedHat) Add official Redis repository
+  ansible.builtin.yum_repository:
     name: redis
-    enablerepo: remi
+    description: Redis
+    baseurl: "https://packages.redis.io/rpm/rockylinux{{ ansible_facts['distribution_major_version'] }}"
+    gpgcheck: true
+    gpgkey: https://packages.redis.io/gpg
+    enabled: true
     state: present
-  when: ansible_facts['distribution_major_version'] == "7"
 
-- name: (RedHat EL8+) Check current Redis module stream
-  ansible.builtin.command:
-    cmd: dnf module list --enabled redis
-  register: redis_module_enabled
-  changed_when: false
-  failed_when: false
-  when: ansible_facts['distribution_major_version'] | int >= 8
-
-- name: (RedHat EL8+) Switch Redis module stream
-  ansible.builtin.command:
-    cmd: dnf module switch-to redis:remi-{{ redis_module_stream }} -y
-  when:
-    - ansible_facts['distribution_major_version'] | int >= 8
-    - redis_module_enabled.rc == 0
-    - ("remi-" ~ redis_module_stream) not in redis_module_enabled.stdout
-  changed_when: true
-  notify: Restart redis
-
-- name: (RedHat EL8+) Install Redis from Remi module stream
+- name: (RedHat) Install Redis
   ansible.builtin.dnf:
-    name: "@redis:remi-{{ redis_module_stream }}"
+    name: "{{ redis_package }}"
     state: present
-  when: ansible_facts['distribution_major_version'] | int >= 8
