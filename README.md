@@ -10,16 +10,17 @@ Modular Ansible Role for deploying and configuring Redis
 
 This role supports the following platforms:
 
-- **RHEL/CentOS/AlmaLinux/RockyLinux**: 8, 9
+- **RHEL/CentOS/AlmaLinux/RockyLinux**: 7, 8, 9
 - **Debian**: 12 (Bookworm), 13 (Trixie)
 - **Ubuntu**: 22.04 (Jammy), 24.04 (Noble)
 
 ## Package Sources
 
-This role installs Redis from the official Redis repository to provide the latest stable versions:
+This role installs Redis from the following repositories:
 
-- **RHEL/CentOS/AlmaLinux/RockyLinux**: [https://packages.redis.io/rpm/](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/rpm/)
-- **Debian/Ubuntu**: [https://packages.redis.io/deb/](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/linux/)
+- **CentOS/RHEL 7**: [Remi Repository](https://rpms.remirepo.net/)
+- **RHEL/CentOS/AlmaLinux/RockyLinux 8+**: [Official Redis Repository](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/rpm/)
+- **Debian/Ubuntu**: [Official Redis Repository](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/linux/)
 
 ## Installation
 

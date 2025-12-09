@@ -1,23 +1,57 @@
 ---
-# Install Redis from the official Redis repository for RHEL/CentOS/AlmaLinux/RockyLinux
-# See: https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/rpm/
+# Install Redis for RHEL/CentOS/AlmaLinux/RockyLinux
+# - EL7: Uses Remi repository
+# - EL8+: Uses official Redis repository (https://packages.redis.io)
 
-- name: (RedHat) Import Redis GPG key
-  ansible.builtin.rpm_key:
-    key: https://packages.redis.io/gpg
-    state: present
+#
+# EL7: Remi Repository
+#
+- name: (RedHat EL7) Install Redis from Remi
+  when: ansible_facts['distribution_major_version'] == '7'
+  block:
+    - name: (RedHat EL7) Add Remi repository GPG key
+      ansible.builtin.rpm_key:
+        state: present
+        key: "https://rpms.remirepo.net/RPM-GPG-KEY-remi"
 
-- name: (RedHat) Add official Redis repository
-  ansible.builtin.yum_repository:
-    name: redis
-    description: Redis
-    baseurl: "https://packages.redis.io/rpm/rockylinux{{ ansible_facts['distribution_major_version'] }}"
-    gpgcheck: true
-    gpgkey: https://packages.redis.io/gpg
-    enabled: true
-    state: present
+    - name: (RedHat EL7) Install Remi repository
+      ansible.builtin.package:
+        name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+        state: present
 
-- name: (RedHat) Install Redis
-  ansible.builtin.dnf:
-    name: redis
-    state: present
+    - name: (RedHat EL7) Install Redis
+      ansible.builtin.package:
+        name: redis
+        enablerepo: remi
+        state: present
+
+#
+# EL8+: Official Redis Repository
+#
+- name: (RedHat EL8+) Install Redis from official repository
+  when: ansible_facts['distribution_major_version'] | int >= 8
+  block:
+    - name: (RedHat EL8+) Install gnupg2 for GPG key handling
+      ansible.builtin.dnf:
+        name: gnupg2
+        state: present
+
+    - name: (RedHat EL8+) Import Redis GPG key
+      ansible.builtin.rpm_key:
+        key: https://packages.redis.io/gpg
+        state: present
+
+    - name: (RedHat EL8+) Add official Redis repository
+      ansible.builtin.yum_repository:
+        name: redis
+        description: Redis
+        baseurl: "https://packages.redis.io/rpm/rockylinux{{ ansible_facts['distribution_major_version'] }}"
+        gpgcheck: true
+        gpgkey: https://packages.redis.io/gpg
+        enabled: true
+        state: present
+
+    - name: (RedHat EL8+) Install Redis
+      ansible.builtin.dnf:
+        name: redis
+        state: present

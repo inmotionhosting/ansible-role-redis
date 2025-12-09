@@ -3,9 +3,9 @@ argument_specs:
   main:
     short_description: Deploy and configure Redis
     description:
-      - Installs Redis from the official Redis repository
+      - Installs Redis (EL7 via Remi, EL8+ via official Redis repository)
       - Configures Redis with customizable settings
-      - Supports RHEL/CentOS/AlmaLinux 8-9, Debian 12-13, Ubuntu 22.04-24.04
+      - Supports RHEL/CentOS/AlmaLinux 7-9, Debian 12-13, Ubuntu 22.04-24.04
     options:
       redis_conf_bind:
         type: str
