@@ -1,0 +1,94 @@
+---
+argument_specs:
+  main:
+    short_description: Deploy and configure Redis
+    description:
+      - Installs Redis (EL7 via Remi, EL8+ via official Redis repository)
+      - Configures Redis with customizable settings
+      - Supports RHEL/CentOS/AlmaLinux 7-9, Debian 12-13, Ubuntu 22.04-24.04
+    options:
+      redis_conf_bind:
+        type: str
+        default: "127.0.0.1"
+        description: IP address(es) Redis will bind to (space-separated for multiple)
+
+      redis_conf_io_threads:
+        type: raw
+        default: "{{ ansible_facts['processor_vcpus'] - 1 if ansible_facts['processor_vcpus'] | default(2) > 1 else 1 }}"
+        description: Number of I/O threads (default is number of CPU cores minus 1, minimum 1)
+
+      redis_conf_lazyfree_lazy_eviction:
+        type: str
+        default: "yes"
+        choices:
+          - "yes"
+          - "no"
+        description: Use lazy freeing on eviction (improves performance)
+
+      redis_conf_lazyfree_lazy_expire:
+        type: str
+        default: "yes"
+        choices:
+          - "yes"
+          - "no"
+        description: Use lazy freeing on key expiration (improves performance)
+
+      redis_conf_lazyfree_lazy_server_del:
+        type: str
+        default: "yes"
+        choices:
+          - "yes"
+          - "no"
+        description: Use lazy freeing on server-side DEL operations (improves performance)
+
+      redis_conf_replica_lazy_flush:
+        type: str
+        default: "yes"
+        choices:
+          - "yes"
+          - "no"
+        description: Use lazy freeing on replica FLUSHALL/FLUSHDB (improves performance)
+
+      redis_conf_maxmemory:
+        type: str
+        default: ""
+        description: Maximum memory Redis can use (e.g., 1G, 512M). Empty for no limit.
+
+      redis_conf_maxmemory_policy:
+        type: str
+        default: allkeys-lru
+        choices:
+          - allkeys-lfu
+          - allkeys-lru
+          - allkeys-random
+          - noeviction
+          - volatile-lfu
+          - volatile-lru
+          - volatile-random
+          - volatile-ttl
+        description: Eviction policy when maxmemory is reached
+
+      redis_conf_port:
+        type: int
+        default: 6379
+        description: Port Redis will listen on (0-65535)
+
+      redis_conf_requirepass:
+        type: raw
+        default: false
+        description: Password for Redis authentication, or false to disable
+
+      redis_conf_timeout:
+        type: int
+        default: 60
+        description: Client idle timeout in seconds (0 to disable)
+
+      redis_conf_unixsocket_path:
+        type: str
+        default: ""
+        description: Path to the Redis Unix socket file (empty to disable)
+
+      redis_conf_unixsocket_permissions:
+        type: int
+        default: 770
+        description: Unix permissions for the socket file (e.g., 770, 700)

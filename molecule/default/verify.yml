@@ -1,0 +1,20 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Verify Redis is running
+      ansible.builtin.command:
+        cmd: redis-cli ping
+      register: redis_ping
+      changed_when: false
+      failed_when: "'PONG' not in redis_ping.stdout"
+
+    - name: Display Redis version
+      ansible.builtin.command:
+        cmd: redis-server --version
+      register: redis_version
+      changed_when: false
+
+    - name: Show Redis version
+      ansible.builtin.debug:
+        var: redis_version.stdout

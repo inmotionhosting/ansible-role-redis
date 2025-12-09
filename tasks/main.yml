@@ -1,48 +1,28 @@
 ---
-# tasks file for inmotion.redis
+# tasks file for inmotionhosting.redis
 
-- name: Include variables and set facts
-  ansible.builtin.include_tasks: facts.yml
+- name: Configure package repository and install Redis
+  ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
 
-- name: Handle os_family errata
-  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
-
-- name: Install Redis if not yet performed
-  ansible.builtin.package:
-    name: "{{ redis_package }}"
-    state: present
-  when: not redis_installed.changed
-
-- name: Get Redis version
-  register: redis_installed_version
-  ansible.builtin.shell: |
-    set -o pipefail
-    redis-server --version | awk '{print $3}' | sed 's/v=//'
-  args:
-    executable: /bin/bash
-  changed_when: false
-
-- name: Set Redis version as fact
-  ansible.builtin.set_fact:
-    redis_version: "{{ redis_installed_version.stdout_lines[0] }}"
+- name: Ensure Redis config directory exists
+  ansible.builtin.file:
+    path: /etc/redis
+    state: directory
+    owner: redis
+    group: redis
+    mode: "0770"
 
 - name: Configure Redis
   ansible.builtin.template:
     src: redis.conf.j2
-    dest: "{{ redis_conf }}"
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Include systemd restart configuation
-  ansible.builtin.include_tasks: systemd.yml
-  when: >-
-    ( redis_systemd_restart|default(False)
-    or systemd_restart|default(False) )
-    and systemd_restart_setting is defined
+    dest: /etc/redis/redis.conf
+    owner: redis
+    group: redis
+    mode: "0640"
+  notify: Restart redis
 
 - name: Enable and start redis service
   ansible.builtin.service:
-    name: "{{ redis_daemon }}"
-    state: started
+    name: redis
     enabled: true
+    state: started

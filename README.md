@@ -7,16 +7,26 @@
 Modular Ansible Role for deploying and configuring Redis
 
 ## Requirements
-This Ansible role supports the two latest stable releases of specific
-server-focused Linux distributions and aims to follow their deprecation
-policies. Additionally we will focus on supporting the latest two stable
-releases of each, which at the time of writing are as follows:
 
-* CentOS 7.x
-* Debian 10 or later
-* Ubuntu 20.04 LTS or later
-* AlmaLinux 8.x or later
-* RockyLinux 8.x or later
+This role supports the following platforms:
+
+- **RHEL/CentOS/AlmaLinux/RockyLinux**: 7, 8, 9
+- **Debian**: 12 (Bookworm), 13 (Trixie)
+- **Ubuntu**: 22.04 (Jammy), 24.04 (Noble)
+
+## Package Sources
+
+This role installs Redis from the following repositories:
+
+- **CentOS/RHEL 7**: [Remi Repository](https://rpms.remirepo.net/)
+- **RHEL/CentOS/AlmaLinux/RockyLinux 8+**: [Official Redis Repository](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/rpm/)
+- **Debian/Ubuntu**: [Official Redis Repository](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/linux/)
+
+## Installation
+
+```bash
+ansible-galaxy install inmotionhosting.redis
+```
 
 ## Dependencies
 
@@ -24,32 +34,43 @@ None.
 
 ## Role Variables
 
-Available variables are listed below with their default values (you can also see `defaults/main.yml`)
+Available variables are listed below with their default values (see `defaults/main.yml`):
 
-| Variable | Definition |
-| -------- | ---------- |
-| redis_conf | The location of the Redis configuration file.
-| redis_conf_bind | The IP addresses Redis will bind to.
-| redis_conf_daemonize | Whether Redis should run as a daemon.
-| redis_conf_logfile | The location of the Redis log file.
-| redis_conf_maxmemory | The maximum memory to be used by Redis.
-| redis_conf_maxmemory_policy | The memory handling policy to use.
-| redis_conf_pidfile | The location of the Redis pidfile.
-| redis_conf_port | Accept connections on the specified port.
-| redis_conf_requirepass | Whether a password is required to log in to Redis.
-| redis_conf_supervised | The init system Redis should target. <br><br>Default: `systemd`
-| redis_conf_timeout | The maximum time a client connection to Redis should live.
-| redis_conf_unixsocket | Whether Redis should be configured to use a unix socket.
-| redis_conf_unixsocket_location | The location of the Redis unix socket file.
-| redis_conf_unixsocket_permissions | The unix permissions to set on the unix socket file.
-| redis_daemon | The name of the Redis daemon.
+| Variable | Default | Description |
+| -------- | ------- | ----------- |
+| `redis_conf_bind` | `127.0.0.1` | The IP addresses Redis will bind to. |
+| `redis_conf_io_threads` | `(CPU cores - 1)` | Number of I/O threads for threaded I/O (minimum 1). |
+| `redis_conf_lazyfree_lazy_eviction` | `yes` | Use lazy freeing on eviction (improves performance). |
+| `redis_conf_lazyfree_lazy_expire` | `yes` | Use lazy freeing on key expiration (improves performance). |
+| `redis_conf_lazyfree_lazy_server_del` | `yes` | Use lazy freeing on server-side DEL operations (improves performance). |
+| `redis_conf_replica_lazy_flush` | `yes` | Use lazy freeing on replica FLUSHALL/FLUSHDB (improves performance). |
+| `redis_conf_maxmemory` | `""` | Maximum memory limit (e.g., 1G, 512M). Empty for no limit. |
+| `redis_conf_maxmemory_policy` | `allkeys-lru` | The memory eviction policy to use. |
+| `redis_conf_port` | `6379` | The port Redis will listen on. |
+| `redis_conf_requirepass` | `false` | The password required to authenticate to Redis, or `false` to disable authentication. |
+| `redis_conf_timeout` | `60` | Client idle timeout in seconds (0 to disable). |
+| `redis_conf_unixsocket_path` | `""` | Path to the Redis Unix socket file (empty to disable). |
+| `redis_conf_unixsocket_permissions` | `770` | The permissions to set on the Unix socket file. |
 
 ## Example Playbook
+
+Basic usage:
 
 ```yaml
 - hosts: www
   roles:
     - role: inmotionhosting.redis
+```
+
+With custom configuration:
+
+```yaml
+- hosts: www
+  roles:
+    - role: inmotionhosting.redis
+      redis_conf_maxmemory: 2G
+      redis_conf_requirepass: "your_secure_password"
+      redis_conf_bind: "0.0.0.0"
 ```
 
 ## License
